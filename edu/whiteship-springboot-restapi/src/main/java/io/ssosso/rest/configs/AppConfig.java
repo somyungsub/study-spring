@@ -3,6 +3,7 @@ package io.ssosso.rest.configs;
 import io.ssosso.rest.accounts.Account;
 import io.ssosso.rest.accounts.AccountRole;
 import io.ssosso.rest.accounts.AccountService;
+import io.ssosso.rest.common.AppProperties;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -34,15 +35,24 @@ public class AppConfig {
       @Autowired
       AccountService accountService;
 
+      @Autowired
+      AppProperties appProperties;
+
       @Override
       public void run(ApplicationArguments args) throws Exception {
         final Account ssosso = Account.builder()
-            .email("ssosso.dev@gmail.com")
-            .password("ssosso")
+            .email(appProperties.getAdminUsername())
+            .password(appProperties.getAdminPassword())
              .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
             .build();
-
         accountService.saveAccount(ssosso);
+
+        final Account user = Account.builder()
+            .email(appProperties.getUserUsername())
+            .password(appProperties.getUserPassword())
+            .roles(Set.of(AccountRole.USER))
+             .build();
+        accountService.saveAccount(user);
       }
     };
   }

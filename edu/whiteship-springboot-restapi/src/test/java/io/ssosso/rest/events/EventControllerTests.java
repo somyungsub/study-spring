@@ -1,14 +1,12 @@
 package io.ssosso.rest.events;
 
-import com.example.demo.accounts.Account;
-import com.example.demo.accounts.AccountRole;
-import com.example.demo.accounts.AccountService;
-import com.example.demo.common.BaseControllerTest;
-import com.example.demo.common.TestDescription;
-import com.example.demo.events.Event;
-import com.example.demo.events.EventDto;
-import com.example.demo.events.EventRepository;
-import com.example.demo.events.EventStatus;
+
+import io.ssosso.rest.accounts.Account;
+import io.ssosso.rest.accounts.AccountRole;
+import io.ssosso.rest.accounts.AccountService;
+import io.ssosso.rest.common.AppProperties;
+import io.ssosso.rest.common.BaseControllerTest;
+import io.ssosso.rest.common.TestDescription;
 import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+
 //@WebMvcTest // 웹 용 Bean 등록, Repository 관련 빈등록 안함
 public class EventControllerTests extends BaseControllerTest {
 
@@ -43,6 +42,9 @@ public class EventControllerTests extends BaseControllerTest {
 
   @Autowired
   AccountService accountService;
+
+  @Autowired
+  AppProperties appProperties;
 
   @Test
   @TestDescription("정상적으로 이벤트를 생성하는 테스트")
@@ -176,11 +178,9 @@ public class EventControllerTests extends BaseControllerTest {
 
   private String getAccessToken() throws Exception {
     // Given
-    final String username = "ssosso.dev@gmail.com";
-    final String password = "sso";
     final Account sso = Account.builder()
-        .email(username)
-        .password(password)
+        .email(appProperties.getUserUsername())
+        .password(appProperties.getUserPassword())
         .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
         .build();
 
@@ -191,8 +191,8 @@ public class EventControllerTests extends BaseControllerTest {
 
     final ResultActions perform = this.mockMvc.perform(post("/oauth/token")
         .with(httpBasic(clientId, clientSecret))
-        .param("username", username)
-        .param("password", password)
+        .param("username", appProperties.getUserUsername())
+        .param("password", appProperties.getUserPassword())
         .param("grant_type", "password")  // 인증타입 -> password 인증
     );
 

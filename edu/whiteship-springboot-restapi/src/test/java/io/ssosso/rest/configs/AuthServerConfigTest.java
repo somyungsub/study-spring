@@ -1,11 +1,12 @@
 package io.ssosso.rest.configs;
 
 
-import com.example.demo.accounts.Account;
-import com.example.demo.accounts.AccountRole;
-import com.example.demo.accounts.AccountService;
-import com.example.demo.common.TestDescription;
+import io.ssosso.rest.accounts.Account;
+import io.ssosso.rest.accounts.AccountRole;
+import io.ssosso.rest.accounts.AccountService;
+import io.ssosso.rest.common.AppProperties;
 import io.ssosso.rest.common.BaseControllerTest;
+import io.ssosso.rest.common.TestDescription;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -21,28 +22,27 @@ public class AuthServerConfigTest extends BaseControllerTest {
   @Autowired
   AccountService accountService;
 
+  @Autowired
+  AppProperties appProperties;
+
   @Test
   @TestDescription("인증 토큰 발급 받는 테스트")
   public void getAuthToken() throws Exception {
 
     // Given
-    final String username = "ssosso.dev@gmail.com";
-    final String password = "sso";
     final Account sso = Account.builder()
-        .email(username)
-        .password(password)
+        .email(appProperties.getUserUsername())
+        .password(appProperties.getUserPassword())
         .roles(Set.of(AccountRole.ADMIN, AccountRole.USER))
         .build();
 
     this.accountService.saveAccount(sso);
 
-    String clientId = "myApp";
-    String clientSecret = "pass";
 
     this.mockMvc.perform(post("/oauth/token")
-          .with(httpBasic(clientId, clientSecret))
-          .param("username", username)
-          .param("password", password)
+          .with(httpBasic(appProperties.getClientId(), appProperties.getClientSecret()))
+          .param("username", appProperties.getUserUsername())
+          .param("password", appProperties.getUserPassword())
           .param("grant_type", "password")  // 인증타입 -> password 인증
         )
         .andDo(print())

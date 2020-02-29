@@ -1,9 +1,5 @@
 package io.ssosso.rest.accounts;
 
-import com.example.demo.accounts.Account;
-import com.example.demo.accounts.AccountRepository;
-import com.example.demo.accounts.AccountRole;
-import com.example.demo.accounts.AccountService;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;

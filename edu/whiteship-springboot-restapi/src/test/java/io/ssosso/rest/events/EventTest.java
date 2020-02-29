@@ -1,6 +1,5 @@
 package io.ssosso.rest.events;
 
-import com.example.demo.events.Event;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;

@@ -1,6 +1,7 @@
 package io.ssosso.rest.configs;
 
 import io.ssosso.rest.accounts.AccountService;
+import io.ssosso.rest.common.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,10 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
   @Autowired
   TokenStore tokenStore;
 
+  @Autowired
+  AppProperties appProperties;
+
+
   @Override
   public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
     security.passwordEncoder(passwordEncoder);
@@ -39,10 +44,10 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
     // jdbc -> 데이터베이스로 관리하는것이 이상적인 방식
     clients
         .inMemory()
-        .withClient("myApp")
+        .withClient(appProperties.getClientId())
         .authorizedGrantTypes("password", "refresh_token")
         .scopes("read", "write")
-        .secret(this.passwordEncoder.encode("pass"))
+        .secret(this.passwordEncoder.encode(appProperties.getClientSecret()))
         .accessTokenValiditySeconds(10 * 60)
         .refreshTokenValiditySeconds(6 * 10 * 60);
   }
