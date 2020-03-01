@@ -265,7 +265,7 @@ public class EventControllerTests extends BaseControllerTest {
 
   @Test
   @TestDescription("30개의 이벤트를 10개씩 두번째 페이지 조회하기")
-  public void test() throws Exception {
+  public void queryEvents() throws Exception {
     // Given
     IntStream.range(0, 30).forEach(i -> {
       this.generateEvent(i);
@@ -283,6 +283,10 @@ public class EventControllerTests extends BaseControllerTest {
         .andDo(print())
         .andExpect(status().isOk())
         .andExpect(jsonPath("page").exists())
+        .andExpect(jsonPath("_embedded.eventList[0]._links").exists())
+        .andExpect(jsonPath("_links.self").exists())
+        .andExpect(jsonPath("_embedded.profile").exists())
+        .andDo(document("query-events"))
     ;
 
   }
