@@ -1,6 +1,8 @@
 package io.ssosso.rest.events;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.ssosso.rest.accounts.Account;
+import io.ssosso.rest.accounts.AccountSerializer;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,7 +35,9 @@ public class Event {
   private EventStatus eventStatus = EventStatus.DRAFT;
 
   @ManyToOne
+  @JsonSerialize(using = AccountSerializer.class)
   private Account manager;
+
 
 
   public void update() {
