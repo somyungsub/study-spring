@@ -28,11 +28,12 @@ public class Event {
   private int limitOfEnrollment;
   private boolean offline;
   private boolean free;
+
   @Enumerated(EnumType.STRING)
   private EventStatus eventStatus = EventStatus.DRAFT;
 
   @ManyToOne
-  private Account account;
+  private Account manager;
 
 
   public void update() {
