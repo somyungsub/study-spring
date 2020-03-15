@@ -1,5 +1,7 @@
 package io.sso.demospringsecurity.config;
 
+import io.sso.demospringsecurity.account.AccountService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -10,11 +12,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  @Autowired
+  AccountService accountService;
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     // 요청
     http.authorizeRequests()
-            .mvcMatchers("/", "/info").permitAll()  // /info 요청 모든 등급 허용, 로그인 x
+            .mvcMatchers("/", "/info", "/account/**").permitAll()  // /info 요청 모든 등급 허용, 로그인 x
             .mvcMatchers("/admin").hasRole("ADMIN") // /admin 요청 인증 + ADMIN 롤만 허용
             .anyRequest().authenticated() // 나머지, 인증만 되면 허용
           .and()
@@ -28,9 +33,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 
-    // 메모리 DB에 들어가는 값
-    auth.inMemoryAuthentication()
-        .withUser("keesun").password("{noop}123").roles("USER").and()
-        .withUser("admin").password("{noop}!@#").roles("ADMIN");
+//    // 메모리 DB에 들어가는 값
+//    auth.inMemoryAuthentication()
+//        .withUser("keesun").password("{noop}123").roles("USER").and()
+//        .withUser("admin").password("{noop}!@#").roles("ADMIN");
+
+    // 구현체 등록 하여 사용하게 하기 -> 하지 않아도, Bean으로 등록되어 있으면 알아서 가져다가 사용함
+    auth.userDetailsService(accountService);
   }
 }
