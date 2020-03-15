@@ -1,6 +1,7 @@
 package io.sso.demospringsecurity.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -21,5 +22,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
           .and()
         .httpBasic()    // Http 기본 설정 정보 사용
     ;
+  }
+
+  // {noop} -> 암호화 저장방식 사용하지 않겠다. 값비교 일치 -> 인증
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+    // 메모리 DB에 들어가는 값
+    auth.inMemoryAuthentication()
+        .withUser("keesun").password("{noop}123").roles("USER").and()
+        .withUser("admin").password("{noop}!@#").roles("ADMIN");
   }
 }
