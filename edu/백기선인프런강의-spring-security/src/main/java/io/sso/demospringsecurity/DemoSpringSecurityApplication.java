@@ -17,7 +17,8 @@ public class DemoSpringSecurityApplication {
 
     /*
       5버전 이후부터 는 NoOp의 디폴트전략이 변경됨, 다양한 인코딩 알고리즘을 사용할 수 있도록
-        - noop, pdkdf2, scrypt, sha256
+      공식 도큐먼트 참조
+        - noop, pdkdf2, scrypt, sha256 ..
         - 디폴트 -> bcrypt
      */
     return PasswordEncoderFactories.createDelegatingPasswordEncoder();

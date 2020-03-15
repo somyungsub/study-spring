@@ -1,5 +1,7 @@
 package io.sso.demospringsecurity.account;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,7 +52,8 @@ public class Account {
     this.role = role;
   }
 
-  public void encodePassword() {
-    this.password = "{noop}" + this.getPassword();  // 인코더 -> 이미 스프링시큐리티에 있음 그거쓰면됨
+  public void encodePassword(PasswordEncoder passwordEncoder) {
+//    this.password = "{noop}" + this.getPassword();  // 인코더 -> 이미 스프링시큐리티에 있음 그거쓰면됨
+    this.password = passwordEncoder.encode(this.password);
   }
 }
