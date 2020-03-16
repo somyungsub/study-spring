@@ -3,13 +3,16 @@ package io.sso.demospringsecurity.config;
 import io.sso.demospringsecurity.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
+@Order(Ordered.LOWEST_PRECEDENCE - 100)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -17,6 +20,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+
+    http
+        .antMatcher("/account/**")
+        .authorizeRequests()
+        .anyRequest().permitAll();
+
+    http.formLogin();
+    http.httpBasic();
+
     // 요청
     http.authorizeRequests()
             .mvcMatchers("/", "/info", "/account/**").permitAll()  // /info 요청 모든 등급 허용, 로그인 x
