@@ -9,7 +9,7 @@ services:
   database:
     image: postgres:9.5
     ports:
-      - "5432:5432"
+      - "5433:5433"
     environment:
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "p0stgr@s"
@@ -22,5 +22,5 @@ services:
       PROFILE: "default"
       CONFIGSERVER_URI: "http://configserver:8888"
       CONFIGSERVER_PORT:   "8888"
-      DATABASESERVER_PORT: "5432"
+      DATABASESERVER_PORT: "5433"
       ENCRYPT_KEY:       "IMSYMMETRIC"
