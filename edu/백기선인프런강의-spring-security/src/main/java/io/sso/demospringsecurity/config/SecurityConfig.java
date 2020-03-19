@@ -12,7 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @Configuration
 //@EnableWebSecurity
-@Order(Ordered.LOWEST_PRECEDENCE - 100)
+@Order(Ordered.LOWEST_PRECEDENCE - 50)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
@@ -21,16 +21,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Override
   protected void configure(HttpSecurity http) throws Exception {
 
-    http
-        .antMatcher("/account/**")
-        .authorizeRequests()
-        .anyRequest().permitAll();
-
-    http.formLogin();
-    http.httpBasic();
+//    http
+//        .antMatcher("/account/**")
+//        .authorizeRequests()
+//        .anyRequest().permitAll();
+//
+//    http.formLogin();
+//    http.httpBasic();
 
     // 요청
-    http.authorizeRequests()
+    http
+            .antMatcher("/**")
+            .authorizeRequests()
             .mvcMatchers("/", "/info", "/account/**").permitAll()  // /info 요청 모든 등급 허용, 로그인 x
             .mvcMatchers("/admin").hasRole("ADMIN") // /admin 요청 인증 + ADMIN 롤만 허용
             .anyRequest().authenticated() // 나머지, 인증만 되면 허용
