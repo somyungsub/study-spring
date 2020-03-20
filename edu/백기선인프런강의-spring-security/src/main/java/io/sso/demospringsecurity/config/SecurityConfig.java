@@ -98,6 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 무시, login 폼까지 가지 않게 함 -> 서버 리소스를 먹지 않으므로 속도향상이 되긴함
 //    web.ignoring().mvcMatchers("/favicon.ico");
 
+    // 다양한 포맷 ignoring 할 수 있으므로 상황에 맞게 적절히 사용해야 함
     web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
   }
 
