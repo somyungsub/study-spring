@@ -20,6 +20,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,6 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers("/user").hasRole("USER") // /user 요청 인증 + USer 롤만 허용
             .anyRequest().authenticated() // 나머지, 인증만 되면 허용
 //            .accessDecisionManager(accessDecisionManager());
+//            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 추천하지 않음, 설정된 모든 필터를 체크하게 됨
             .expressionHandler(expressionHandler());
 
     http.formLogin();    // 로그인 , form, oauth, openid
@@ -95,7 +97,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-    // 무시, login 폼까지 가지 않게 함 -> 서버 리소스를 먹지 않으므로 속도향상이 되긴함
+    // 시큐리티 무시, login 폼까지 가지 않게 함 -> 서버 리소스를 먹지 않으므로 속도향상이 되긴함
 //    web.ignoring().mvcMatchers("/favicon.ico");
 
     // 다양한 포맷 ignoring 할 수 있으므로 상황에 맞게 적절히 사용해야 함
