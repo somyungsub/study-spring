@@ -2,6 +2,7 @@ package io.sso.demospringsecurity.config;
 
 import io.sso.demospringsecurity.account.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -13,6 +14,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.access.vote.AffirmativeBased;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
@@ -89,6 +91,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.formLogin();    // 로그인 , form, oauth, openid
     http.httpBasic()    // Http 기본 설정 정보 사용
     ;
+  }
+
+  @Override
+  public void configure(WebSecurity web) throws Exception {
+    // 무시, login 폼까지 가지 않게 함 -> 서버 리소스를 먹지 않으므로 속도향상이 되긴함
+//    web.ignoring().mvcMatchers("/favicon.ico");
+
+    web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
   }
 
   // {noop} -> 암호화 저장방식 사용하지 않겠다. 값비교 일치 -> 인증
