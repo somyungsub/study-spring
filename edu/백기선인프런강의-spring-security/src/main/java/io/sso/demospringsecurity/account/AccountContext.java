@@ -1,7 +1,5 @@
-package io.sso.demospringsecurity.form;
+package io.sso.demospringsecurity.account;
 
-
-import io.sso.demospringsecurity.account.Account;
 
 public class AccountContext {
 
