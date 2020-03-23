@@ -85,9 +85,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .mvcMatchers("/", "/info", "/account/**").permitAll()  // /info 요청 모든 등급 허용, 로그인 x
             .mvcMatchers("/admin").hasRole("ADMIN") // /admin 요청 인증 + ADMIN 롤만 허용
             .mvcMatchers("/user").hasRole("USER") // /user 요청 인증 + USer 롤만 허용
+//            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 추천하지 않음, 설정된 모든 필터를 체크하게 됨
             .anyRequest().authenticated() // 나머지, 인증만 되면 허용
 //            .accessDecisionManager(accessDecisionManager());
-//            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 추천하지 않음, 설정된 모든 필터를 체크하게 됨
             .expressionHandler(expressionHandler());
 
     http.formLogin();    // 로그인 , form, oauth, openid
