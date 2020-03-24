@@ -3,11 +3,13 @@ package io.sso.demospringsecurity;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @SpringBootApplication
+@EnableAsync // 이걸줘야 비동기처리가 가능함, 더 정확히는 쓰레드풀 설정도 필요
 public class DemoSpringSecurityApplication {
 
   @Bean

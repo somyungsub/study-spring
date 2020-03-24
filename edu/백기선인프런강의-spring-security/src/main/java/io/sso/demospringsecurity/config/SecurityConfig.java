@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
@@ -93,6 +94,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.formLogin();    // 로그인 , form, oauth, openid
     http.httpBasic()    // Http 기본 설정 정보 사용
     ;
+
+    // 현재 쓰레드에서 -> 하위쓰레드도 시큐리티 컨텍스트 공유가 되도록함
+    SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
   }
 
   @Override
