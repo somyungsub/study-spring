@@ -92,7 +92,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .expressionHandler(expressionHandler());
 
     http.formLogin();    // 로그인 , form, oauth, openid
-    http.httpBasic()    // Http 기본 설정 정보 사용
+    http.httpBasic();    // Http 기본 설정 정보 사용
+
+    http.logout()
+//            .logoutUrl("/my/logout")
+            .logoutSuccessUrl("/")  // 성공후 리다이렉트 경로
+//            .addLogoutHandler()
+//            .logoutSuccessHandler()  // 성공후
+//            .invalidateHttpSession(true)
+            .deleteCookies()  // 쿠키 삭제
     ;
 
     // 현재 쓰레드에서 -> 하위쓰레드도 시큐리티 컨텍스트 공유가 되도록함
