@@ -91,7 +91,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            .accessDecisionManager(accessDecisionManager());
             .expressionHandler(expressionHandler());
 
-    http.formLogin();    // 로그인 , form, oauth, openid
+    http.formLogin()    // 로그인 , form, oauth, openid
+//        .usernameParameter("my-username")   // form -> name 값 설정
+//        .passwordParameter("my-password")   // form -> name 값 설정
+        .loginPage("/signin")  // 로그인페이지 커스텀 설정
+    ;
+
+
+
     http.httpBasic();    // Http 기본 설정 정보 사용
 
     http.logout()
