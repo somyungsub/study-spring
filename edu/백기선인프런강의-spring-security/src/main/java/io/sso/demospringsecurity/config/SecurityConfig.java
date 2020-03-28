@@ -99,9 +99,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .permitAll()
     ;
 
-
-
-    http.httpBasic();    // Http 기본 설정 정보 사용
+    http.httpBasic();    // Http 기본 설정 정보 사용, base64로 인코딩
 
     http.logout()
 //            .logoutUrl("/my/logout")
