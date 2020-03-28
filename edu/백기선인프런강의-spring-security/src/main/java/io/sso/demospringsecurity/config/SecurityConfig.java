@@ -94,7 +94,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http.formLogin()    // 로그인 , form, oauth, openid
 //        .usernameParameter("my-username")   // form -> name 값 설정
 //        .passwordParameter("my-password")   // form -> name 값 설정
-        .loginPage("/signin")  // 로그인페이지 커스텀 설정
+//        .loginPage("/signin")  // 로그인페이지 커스텀 설정
+        .loginPage("/login")  //
+        .permitAll()
     ;
 
 
@@ -107,7 +109,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //            .addLogoutHandler()
 //            .logoutSuccessHandler()  // 성공후
 //            .invalidateHttpSession(true)
-            .deleteCookies()  // 쿠키 삭제
+//            .deleteCookies()  // 쿠키 삭제
     ;
 
     // 현재 쓰레드에서 -> 하위쓰레드도 시큐리티 컨텍스트 공유가 되도록함
