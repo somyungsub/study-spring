@@ -17,6 +17,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
@@ -111,6 +112,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     ;
 
 //    http.anonymous().principal("anonymousUser");
+
+    http.sessionManagement()
+            .sessionFixation()
+              .changeSessionId()  // 세션 아이디 변경하기
+            .maximumSessions(1)    // 세션 유지 갯수
+//              .expiredUrl()     // 세션 만료후 보낼
+              .maxSessionsPreventsLogin(false)  // 새로운 세션 로그인을 막는 기능
+//            .invalidSessionUrl()
+   ;
+
+    // Spring Session 프로젝트 사용검토
+    http.sessionManagement()
+            .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 생성 전략, 무상태 > 세션 사용 적절하지 않음
+
+    ;
 
     // 현재 쓰레드에서 -> 하위쓰레드도 시큐리티 컨텍스트 공유가 되도록함
     SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
