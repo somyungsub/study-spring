@@ -1,6 +1,7 @@
 package io.sso.demospringsecurity.config;
 
 import io.sso.demospringsecurity.account.AccountService;
+import io.sso.demospringsecurity.common.LoggingFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -79,6 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   protected void configure(HttpSecurity http) throws Exception {
+
+    // 커스텀 필터 추가 한거 적용
+    http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class);
 
 //    http
 //        .antMatcher("/account/**")
