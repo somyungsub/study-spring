@@ -93,7 +93,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
             .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll()  // /info 요청 모든 등급 허용, 로그인 x
             .mvcMatchers("/admin").hasRole("ADMIN") // /admin 요청 인증 + ADMIN 롤만 허용
-            .mvcMatchers("/user").hasRole("USER") // /user 요청 인증 + USer 롤만 허용
+            .mvcMatchers("/user").hasAuthority("ROLE_USER") // /user 요청 인증 + USer 롤만 허용
 //            .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // 추천하지 않음, 설정된 모든 필터를 체크하게 됨
             .anyRequest().authenticated() // 나머지, 인증만 되면 허용
 //            .accessDecisionManager(accessDecisionManager());
@@ -106,6 +106,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .loginPage("/login")  //
         .permitAll()
     ;
+
+
+    http.rememberMe()
+            .alwaysRemember(false)
+            .useSecureCookie(true)  // 노출 안되게 허용
+            .rememberMeParameter("remember")  // default remember-me
+            .userDetailsService(accountService)
+            .key("remember-me-sample")
+    ;
+
 
     http.httpBasic();    // Http 기본 설정 정보 사용, base64로 인코딩
 
@@ -150,6 +160,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
               httpServletResponse.sendRedirect("/access-denied");
             })
     ;
+
+
 
 
     // 현재 쓰레드에서 -> 하위쓰레드도 시큐리티 컨텍스트 공유가 되도록함
