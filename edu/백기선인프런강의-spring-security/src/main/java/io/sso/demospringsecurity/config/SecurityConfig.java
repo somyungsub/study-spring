@@ -8,6 +8,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
@@ -19,9 +20,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 import org.springframework.security.web.access.expression.WebExpressionVoter;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
@@ -127,6 +134,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션 생성 전략, 무상태 > 세션 사용 적절하지 않음
 
     ;
+
+    // ExceptionTranslatorFilter -> FilterSecurityInterceptor (AccessDecisionManager, AffirmativeBased)
+    // 1. AuthenticationException -> 인증이 안된 경우, AuthenticationEntryPoint
+    // 2. AccessDeniedException   -> 인가가 안된 경우, AccessDeniedHandler
+    http.exceptionHandling()
+            .accessDeniedPage("/access-denied")
+
+            // 좀더 다양한 컨트롤이 필요한 경우,
+            .accessDeniedHandler((httpServletRequest, httpServletResponse, e) -> {
+              UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+              // Logger 사용으로 .. 바꾸기 편의상
+              System.out.println("principal.getUsername() = " + principal.getUsername());
+              System.out.println("httpServletRequest.getRequestURL() = " + httpServletRequest.getRequestURL());
+              httpServletResponse.sendRedirect("/access-denied");
+            })
+    ;
+
 
     // 현재 쓰레드에서 -> 하위쓰레드도 시큐리티 컨텍스트 공유가 되도록함
     SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
