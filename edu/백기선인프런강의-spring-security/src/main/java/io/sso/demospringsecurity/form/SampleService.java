@@ -4,17 +4,28 @@ package io.sso.demospringsecurity.form;
 import io.sso.demospringsecurity.account.Account;
 import io.sso.demospringsecurity.common.SecurityLogger;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Collection;
 
 @Service
 public class SampleService {
-  public void dashboard() {
+  // 메서드 호출전 권한 검사
+//  @Secured("ROLE_USER")
+  @Secured({"ROLE_USER", "ROLE_ADMIN"})
+//  @RolesAllowed("ROLE_USER")
+//  @PreAuthorize("hasRole('USER')")
+//  @PreAuthorize("#name == authentication.principal.username")
+//  @PostAuthorize("returnObject.username == authentication.principal.nickName")   // 인가후 작업 가능하게
+  public void dashboard() { // String name parameter
 //    final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //    final Object principal = authentication.getPrincipal();
 //    final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
@@ -25,12 +36,11 @@ public class SampleService {
 //    System.out.println("====================");
 //    System.out.println(account.getUsername());
 
-
     final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    final UserDetails principal = (UserDetails) authentication.getPrincipal();
+    final UserDetails userDetails = (UserDetails) authentication.getPrincipal();
     System.out.println("========================");
     System.out.println(authentication);
-//    System.out.println(principal.getUsername());
+    System.out.println(userDetails.getUsername());
 
   }
 
@@ -45,3 +55,5 @@ public class SampleService {
     System.out.println("Async service is called.");
   }
 }
+
+
