@@ -33,11 +33,12 @@ public class AccountService implements UserDetailsService { // Spring Security �
     }
 
     // 타입 변환 필요 (Account -> UserDetails)
-    return User.builder()
-        .username(account.getUsername())
-        .password(account.getPassword())
-        .roles(account.getRole())
-        .build();
+//    return User.builder()
+//        .username(account.getUsername())
+//        .password(account.getPassword())
+//        .roles(account.getRole())
+//        .build();
+    return new UserAccount(account);
   }
 
 

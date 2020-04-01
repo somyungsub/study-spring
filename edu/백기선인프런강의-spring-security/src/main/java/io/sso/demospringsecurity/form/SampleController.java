@@ -3,8 +3,10 @@ package io.sso.demospringsecurity.form;
 
 import io.sso.demospringsecurity.account.AccountContext;
 import io.sso.demospringsecurity.account.AccountRepository;
+import io.sso.demospringsecurity.account.UserAccount;
 import io.sso.demospringsecurity.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,12 +26,16 @@ public class SampleController {
   AccountRepository accountRepository;
 
   @GetMapping("/")
-  public String index(Model model, Principal principal) {
+  public String index(Model model
+//          , Principal principal)
+          , @AuthenticationPrincipal UserAccount userAccount)
+  {
 
-    if (principal == null) {
+    if (userAccount == null) {
       model.addAttribute("message", "Hello Spring Security");
     } else {
-      model.addAttribute("message", "Hello, " + principal.getName());
+//      userAccount.getAccount().getUsername();
+      model.addAttribute("message", "Hello, " + userAccount.getUsername());
     }
     return "index";
   }
