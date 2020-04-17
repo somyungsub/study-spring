@@ -10,8 +10,8 @@ import service.TestService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/tests")
-public class Test2Controller {
+@RequestMapping("/json")
+public class JsonTestController {
 
   @Autowired
   TestService testService;
