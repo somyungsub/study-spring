@@ -3,8 +3,7 @@ package com.example.demo.study;
 import com.example.demo.domain.Member;
 import com.example.demo.domain.Study;
 import com.example.demo.member.MemberService;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
@@ -12,6 +11,9 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
+@Testcontainers
 class StudyServiceTest {
   // 이 애노테이션만으로 인스턴스가 생성되지는 않음 -> Class에 @ExtendWith 선언 필요
   @Mock
@@ -32,6 +35,26 @@ class StudyServiceTest {
 
   @Mock
   StudyRepository studyRepository;
+
+  // static x -> 메서드 별로 인스턴스를 만들게 됨
+  @Container
+  static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer().withDatabaseName("test2");
+
+  @BeforeEach
+  void beforeEach() {
+    studyRepository.deleteAll();
+  }
+
+//  @BeforeAll
+//  static void beforeAll() {
+//    postgreSQLContainer.start();  // 컨테이너 실행
+//    System.out.println(postgreSQLContainer.getJdbcUrl());
+//  }
+//
+//  @AfterAll
+//  static void afterAll() {
+//    postgreSQLContainer.stop();   // 컨테이너 닫기
+//  }
 
   @Test
   @DisplayName("테스트")
@@ -112,6 +135,7 @@ class StudyServiceTest {
 
     assertEquals(Optional.empty(), memberService.findById(3L));
   }
+
   @Test
   @DisplayName("스터디 실제생성")
   void createStudyService3(@Mock MemberService memberService,

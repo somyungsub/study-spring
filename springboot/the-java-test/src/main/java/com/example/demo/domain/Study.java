@@ -5,11 +5,8 @@ import com.example.demo.study.StudyStatus;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import java.time.LocalDateTime;
+import javax.persistence.*;
+import java.util.Date;
 
 @Setter
 @Getter
@@ -22,13 +19,16 @@ public class Study {
 
   private StudyStatus status = StudyStatus.DRAFT;
 
+  @Column(name = "limit_count")
   private int limit;
 
   private String name;
 
-  private LocalDateTime startDate;
+  @Temporal(TemporalType.TIMESTAMP)
+  private Date startDate;
+//  private LocalDateTime startDate;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
   private Member member;
 
   public Study(int limit, String name) {
@@ -62,7 +62,8 @@ public class Study {
 
   public void open() {
     this.status = StudyStatus.OPENED;
-    this.startDate = LocalDateTime.now();
+    this.startDate = new Date();
+//    this.startDate = LocalDateTime.now();
     System.out.println("Study open !!!");
   }
 }
