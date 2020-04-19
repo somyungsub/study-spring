@@ -3,15 +3,21 @@ package com.example.demo.study;
 import com.example.demo.domain.Member;
 import com.example.demo.domain.Study;
 import com.example.demo.member.MemberService;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.containers.output.Slf4jLogConsumer;
+import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -28,7 +34,11 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @ActiveProfiles("test")
 @Testcontainers
+@Slf4j
 class StudyServiceTest {
+
+//  private static final Logger LOGGER = LoggerFactory.getLogger(StudyServiceTest.class);
+
   // 이 애노테이션만으로 인스턴스가 생성되지는 않음 -> Class에 @ExtendWith 선언 필요
   @Mock
   MemberService memberService;
@@ -38,12 +48,35 @@ class StudyServiceTest {
 
   // static x -> 메서드 별로 인스턴스를 만들게 됨
   @Container
-  static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer().withDatabaseName("test2");
+  static GenericContainer postgreSQLContainer
+          = new GenericContainer("postgres")
+          .withExposedPorts(5432)
+          .withEnv("POSTGRES_DB", "test2")
+          .withEnv("POSTGRES_USER", "ssosso")
+          .withEnv("POSTGRES_PASSWORD", "ssosso")
+//          .waitingFor(Wait.forListeningPort())
+//          .waitingFor(Wait.forHttp("/hello"))
+//          .waitingFor(Wait.forLogMessage(""))
+          ;
 
+
+//  static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer().withDatabaseName("test2");
+
+
+  @BeforeAll
+  static void beforeAll() {
+    Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(log); // lombok
+//    Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
+    postgreSQLContainer.followOutput(logConsumer);
+  }
   @BeforeEach
   void beforeEach() {
+    System.out.println("==========================================");
+    System.out.println(postgreSQLContainer.getMappedPort(5432));
+    System.out.println(postgreSQLContainer.getLogs());
     studyRepository.deleteAll();
   }
+
 
 //  @BeforeAll
 //  static void beforeAll() {
