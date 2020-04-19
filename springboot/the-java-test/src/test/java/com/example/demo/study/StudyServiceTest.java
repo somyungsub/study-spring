@@ -12,8 +12,15 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.util.TestPropertyValues;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.containers.output.Slf4jLogConsumer;
@@ -35,6 +42,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 @Testcontainers
 @Slf4j
+//@ContextConfiguration(initializers = StudyServiceTest.ContainerPropertyInitializer.class)
 class StudyServiceTest {
 
 //  private static final Logger LOGGER = LoggerFactory.getLogger(StudyServiceTest.class);
@@ -45,6 +53,12 @@ class StudyServiceTest {
 
   @Mock
   StudyRepository studyRepository;
+
+  @Autowired
+  Environment environment;
+
+//  @Value("${container.port}")
+//  int port;
 
   // static x -> 메서드 별로 인스턴스를 만들게 됨
   @Container
@@ -63,17 +77,21 @@ class StudyServiceTest {
 //  static PostgreSQLContainer postgreSQLContainer = new PostgreSQLContainer().withDatabaseName("test2");
 
 
+
+
   @BeforeAll
   static void beforeAll() {
     Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(log); // lombok
 //    Slf4jLogConsumer logConsumer = new Slf4jLogConsumer(LOGGER);
     postgreSQLContainer.followOutput(logConsumer);
   }
+
   @BeforeEach
   void beforeEach() {
     System.out.println("==========================================");
-    System.out.println(postgreSQLContainer.getMappedPort(5432));
-    System.out.println(postgreSQLContainer.getLogs());
+//    System.out.println(postgreSQLContainer.getMappedPort(5432));
+//    System.out.println(postgreSQLContainer.getLogs());
+    System.out.println(environment.getProperty("container.port"));
     studyRepository.deleteAll();
   }
 
@@ -329,4 +347,12 @@ class StudyServiceTest {
 
   }
 
+  static class ContainerPropertyInitializer implements ApplicationContextInitializer<ConfigurableApplicationContext> {
+
+    @Override
+    public void initialize(ConfigurableApplicationContext configurableApplicationContext) {
+//      TestPropertyValues.of("container.port=" + postgreSQLContainer.getMappedPort(5432))
+//              .applyTo(configurableApplicationContext.getEnvironment());
+    }
+  }
 }
