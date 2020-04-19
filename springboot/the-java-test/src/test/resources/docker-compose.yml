@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  study-db:
+    image: postgres
+    ports:
+    - 5432  # host 매핑을 안한 경우, 랜덤 포트 사용
+    environment:
+      POSTGRES_PASSWORD: ssosso
+      POSTGRES_USER: ssosso
+      POSTGRES_DB: test
