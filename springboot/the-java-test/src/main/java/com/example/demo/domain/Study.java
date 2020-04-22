@@ -1,7 +1,6 @@
 package com.example.demo.domain;
 
 
-import com.example.demo.study.StudyStatus;
 import lombok.Getter;
 import lombok.Setter;
 
