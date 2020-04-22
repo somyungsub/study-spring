@@ -18,7 +18,7 @@ class ArchTests {
   @ArchTest
   ArchRule domainPackageRule = classes().that().resideInAPackage("..domain..")
           .should().onlyBeAccessed().byClassesThat()
-          .resideInAnyPackage( "..member..", "..domain..");
+          .resideInAnyPackage("..study..", "..member..", "..domain..");
 
   @ArchTest
   ArchRule memberPackageRule = noClasses().that().resideInAPackage("..domain..")
@@ -31,6 +31,8 @@ class ArchTests {
   @ArchTest
   ArchRule freeOfCycle = slices().matching("..demo.(*)..")
           .should().beFreeOfCycles();
+
+
 
   @Test
   void packageDependencyTests() {
@@ -45,7 +47,6 @@ class ArchTests {
      */
 
 
-//            .resideInAnyPackage("..study..", "..member..", "..domain..");
 //    domainPackageRule.check(classes);
 
 
@@ -56,6 +57,7 @@ class ArchTests {
 
 
 //    freeOfCycle.check(classes);
+
   }
 
 }
