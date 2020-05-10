@@ -3,6 +3,7 @@ spring:
     url: jdbc:postgresql://localhost:6432/jpashop1
     username: ssosso
     password: ssosso
+    driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
       ddl-auto: create
