@@ -1,6 +1,7 @@
 package io.ssosso.jpashop1;
 
 import io.ssosso.jpashop1.domain.Member;
+import io.ssosso.jpashop1.repository.MemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,8 +26,8 @@ class MemberRepositoryTest {
     member.setName("memberA");
 
     // when
-    final Long id = memberRepository.save(member);
-    final Member findMember = memberRepository.find(id);
+    memberRepository.save(member);
+    final Member findMember = memberRepository.findOne(member.getId());
 
     // then
     Assertions.assertThat(findMember.getId()).isEqualTo(member.getId());
