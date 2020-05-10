@@ -22,10 +22,10 @@ public class Order {
   @JoinColumn(name = "member_id")
   private Member member;
 
-  @OneToMany(mappedBy = "order")
+  @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // Order 저장시, OrderItem 세팅하면 -> OrderItem 도 같이 저장 하게 끔
   private List<OrderItem> orderItems = new ArrayList<>();
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
   private Delivery delivery;
 
 
@@ -33,5 +33,22 @@ public class Order {
 
   @Enumerated(EnumType.STRING)
   private OrderStatus status;   // 주문상태[ORDER, CANCEL]
+
+
+  // 연관관계 편의 메서드
+  public void addMember(Member member) {
+    this.member = member;
+    member.getOrders().add(this);
+  }
+
+  public void addOrderItem(OrderItem orderItem) {
+    this.orderItems.add(orderItem);
+    orderItem.setOrder(this);
+  }
+
+  public void addDelivery(Delivery delivery) {
+    this.delivery = delivery;
+    delivery.setOrder(this);
+  }
 
 }
