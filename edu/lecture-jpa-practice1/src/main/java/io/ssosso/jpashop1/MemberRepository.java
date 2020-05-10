@@ -1,5 +1,6 @@
 package io.ssosso.jpashop1;
 
+import io.ssosso.jpashop1.domain.Member;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
