@@ -1,6 +1,8 @@
 package io.ssosso.jpashop1.repository;
 
 import io.ssosso.jpashop1.domain.Order;
+import io.ssosso.jpashop1.domain.OrderSearch;
+import io.ssosso.jpashop1.domain.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +23,17 @@ public class OrderRepository {
     return em.find(Order.class, id);
   }
 
-//  public List<Order> findAll(OrderSerarch orderSearch) {
-//
-//  }
+  public List<Order> findAll(OrderSearch orderSearch) {
+
+    // 동적쿼리 -> QueryDSL 강추, Criteria 비추
+
+
+    return em.createQuery("select o from Order o join o.member m " +
+            "where o.status =: status " +
+            "and m.name like :name", Order.class)
+            .setParameter("status", orderSearch.getOrderStatus())
+            .setParameter("name", orderSearch.getMemberName())
+            .setMaxResults(1000)  // 최대 1000건
+            .getResultList();
+  }
 }
