@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -37,5 +38,17 @@ public class MemberController {
     member.setAddress(address);
     memberService.join(member);
     return "redirect:/";
+  }
+
+  @GetMapping("/members")
+  public String list(Model model) {
+    /*
+      보통은 엔티티를 반환하지 않고, DTO 같은 객체를 만들어서 화면으로 전달해야함
+      - API 경우, 엔티티 그대로 반환은 위험
+      - Entity, 비즈니스 로직에 집중하도록 설계 해야 함. 화면 데이터와 분리 필요
+     */
+    final List<Member> members = memberService.findMembers();
+    model.addAttribute("members", members);
+    return "members/memberList";
   }
 }
