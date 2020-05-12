@@ -1,9 +1,6 @@
 package io.ssosso.jpashop1.service;
 
-import io.ssosso.jpashop1.domain.Delivery;
-import io.ssosso.jpashop1.domain.Member;
-import io.ssosso.jpashop1.domain.Order;
-import io.ssosso.jpashop1.domain.OrderItem;
+import io.ssosso.jpashop1.domain.*;
 import io.ssosso.jpashop1.domain.item.Item;
 import io.ssosso.jpashop1.repository.ItemRepository;
 import io.ssosso.jpashop1.repository.MemberRepository;
@@ -66,8 +63,8 @@ public class OrderService {
   /**
    * 검색
    */
-//  public List<Order> findOrders(OrderSearch orderSearch) {
-//    return orderRepository.findAll(orderSearch);
-//  }
+  public List<Order> findOrders(OrderSearch orderSearch) {
+    return orderRepository.findAllByString(orderSearch);
+  }
 
 }
