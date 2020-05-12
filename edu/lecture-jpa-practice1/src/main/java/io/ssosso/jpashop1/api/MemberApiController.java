@@ -2,11 +2,10 @@ package io.ssosso.jpashop1.api;
 
 import io.ssosso.jpashop1.domain.Member;
 import io.ssosso.jpashop1.service.MemberService;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -37,6 +36,16 @@ public class MemberApiController {
     return new CreateMemberResponse(id);
   }
 
+  @PutMapping("/api/v2/members/{id}")
+  public UpdateMemberResponse updateMemberV2(@PathVariable Long id,
+                                             @RequestBody @Valid UpdateMemberRequest request) {
+    // update -> 가급적 변경감지 활용
+    memberService.update(id, request.getName());
+    Member findMember = memberService.findOne(id);
+
+    return new UpdateMemberResponse(findMember.getId(), findMember.getName());
+  }
+
   @Data
   static class CreateMemberResponse {
     private Long id;
@@ -48,6 +57,18 @@ public class MemberApiController {
 
   @Data
   static class CreateMemberRequest {
+    private String name;
+  }
+
+  @Data
+  @AllArgsConstructor
+  static private class UpdateMemberResponse {
+    private Long id;
+    private String name;
+  }
+
+  @Data
+  static private class UpdateMemberRequest {
     private String name;
   }
 }

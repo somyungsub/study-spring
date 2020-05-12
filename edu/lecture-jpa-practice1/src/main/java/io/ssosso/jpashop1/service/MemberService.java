@@ -55,4 +55,10 @@ public class MemberService {
     return memberRepository.findOne(memberId);
   }
 
+  @Transactional
+  public void update(Long id, String name) {
+    Member member = memberRepository.findOne(id); // 영속 상태
+    member.setName(name); // 변경 감지 -> Update Sql -> @Transactional -> commit or rollback
+      // entity 반환해도 되지만, 분리가 필요 반환해도 id 정도 반환
+  }
 }
