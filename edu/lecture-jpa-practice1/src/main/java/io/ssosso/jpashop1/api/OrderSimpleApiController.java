@@ -5,6 +5,8 @@ import io.ssosso.jpashop1.domain.Order;
 import io.ssosso.jpashop1.domain.OrderSearch;
 import io.ssosso.jpashop1.domain.OrderStatus;
 import io.ssosso.jpashop1.repository.OrderRepository;
+import io.ssosso.jpashop1.repository.order.simplequery.OrderSimpleQueryDto;
+import io.ssosso.jpashop1.repository.order.simplequery.OrderSimpleQueryRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +30,7 @@ import java.util.stream.Collectors;
 public class OrderSimpleApiController {
 
   private final OrderRepository orderRepository;
+  private final OrderSimpleQueryRepository orderSimpleQueryRepository;
 
   /**
    * null -> 지연로딩
@@ -68,6 +71,36 @@ public class OrderSimpleApiController {
             .collect(Collectors.toList());
 
     return collect;
+  }
+
+  /**
+   * fetch join 으로 N+1 문제해결하기
+   * - 100 % 이해하고 사용할 줄 알아야함
+   */
+  @GetMapping("/api/v3/simple-orders")
+  public List<SimpleOrderDto> ordersV3() {
+    final List<Order> orders = orderRepository.findAllWithMemberDelivery();
+    final List<SimpleOrderDto> collect = orders.stream()
+            .map(SimpleOrderDto::new)
+            .collect(Collectors.toList());
+    return collect;
+  }
+
+  /**
+   * v3과 차이는 select 컬럼을 직접 만듬 -> 최적화
+   * - 단점 : 공용으로 재사용 하기 힘듬. 특정 API에 한해서 사용 최적(OrderSimpleQueryDto)
+   *       : 코드가 지저분해짐 -> orderRepository.findOrderDtos
+   *       : 화면 or api 변경 -> 같이 변경이 필요해짐
+   *
+   * 크게 네트워크에 대한 이슈가 없다면 그냥 V3으로 사용해도 무방하며, 권장
+   * 크게 성능차이가 많이 나지 않음. 이유는 보통 join에서 성능차이가 많이 날뿐.. I/O 횟수나
+   *
+   * 필드의 갯수가 20개가 넘어갈 경우, 고민 해볼만 하다.
+   */
+  @GetMapping("/api/v4/simple-orders")
+  public List<OrderSimpleQueryDto> ordersV4() {
+    final List<OrderSimpleQueryDto> orders = orderSimpleQueryRepository.findOrderDtos();
+    return orders;
   }
 
   @Data

@@ -2,7 +2,7 @@ package io.ssosso.jpashop1.repository;
 
 import io.ssosso.jpashop1.domain.Order;
 import io.ssosso.jpashop1.domain.OrderSearch;
-import io.ssosso.jpashop1.domain.OrderStatus;
+import io.ssosso.jpashop1.repository.order.simplequery.OrderSimpleQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -71,4 +71,23 @@ public class OrderRepository {
     }
     return query.getResultList();
   }
+
+  public List<Order> findAllWithMemberDelivery() {
+
+    // Lazy 무시, 모든 연관데이터 로딩하여 다 가지고옴
+    return em.createQuery(
+            "select o from Order o " +
+                    "join fetch o.member m " +
+                    "join fetch o.delivery d", Order.class
+    ).getResultList();
+  }
+
+//  public List<OrderSimpleQueryDto> findOrderDtos() {
+//    return em.createQuery(
+//            "select new io.ssosso.jpashop1.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address) " +
+//                    "from Order o " +
+//            "join o.member m " +
+//            "join o.delivery d", OrderSimpleQueryDto.class)
+//            .getResultList();
+//  }
 }
