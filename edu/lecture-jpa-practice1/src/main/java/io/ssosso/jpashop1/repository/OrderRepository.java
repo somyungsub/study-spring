@@ -82,6 +82,25 @@ public class OrderRepository {
     ).getResultList();
   }
 
+  public List<Order> findAllWithItem() {
+    /*
+      일대다 주의사항 (OneToMany)
+      페이징 불가 - 반드시 알아둘 것!!
+      메모리에 올랄감 -> 조심
+     */
+    return em.createQuery(
+            "select distinct o from Order o " +
+                    "join fetch o.member m " +
+                    "join fetch o.delivery d " +
+                    "join fetch o.orderItems oi " +
+                    "join fetch oi.item i ", Order.class
+    )
+            .setFirstResult(1)
+            .setMaxResults(100)
+            .getResultList();
+
+  }
+
 //  public List<OrderSimpleQueryDto> findOrderDtos() {
 //    return em.createQuery(
 //            "select new io.ssosso.jpashop1.repository.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address) " +
