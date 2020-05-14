@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ public class Order {
   @JoinColumn(name = "member_id")
   private Member member;
 
+//  @BatchSize(size = 100)
   @OneToMany(mappedBy = "order", cascade = CascadeType.ALL) // Order 저장시, OrderItem 세팅하면 -> OrderItem 도 같이 저장 하게 끔
   private List<OrderItem> orderItems = new ArrayList<>();
 
