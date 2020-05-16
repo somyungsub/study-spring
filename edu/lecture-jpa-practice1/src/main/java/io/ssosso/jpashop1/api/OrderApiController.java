@@ -6,6 +6,7 @@ import io.ssosso.jpashop1.repository.order.query.OrderFlatDto;
 import io.ssosso.jpashop1.repository.order.query.OrderItemQueryDto;
 import io.ssosso.jpashop1.repository.order.query.OrderQueryDto;
 import io.ssosso.jpashop1.repository.order.query.OrderQueryRepository;
+import io.ssosso.jpashop1.service.query.OrderQueryService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.*;
 
@@ -30,8 +30,9 @@ public class OrderApiController {
     List<Order> all = orderRepository.findAllByString(new OrderSearch());
 
     // 지연로딩 초기화
+    // osiv false 인경우 트랜잭션안에서 처리해야함. or fetch join 사용해서 즉시로딩 시킴
     for (Order order : all) {
-      order.getMember().getName();
+      order.getMember().getName();  // 지연로딩 -> 영속성 컨텍스트가 존재해야하는데.. 없으면 예외 발생
       order.getDelivery().getAddress();
       List<OrderItem> orderItems = order.getOrderItems();
       orderItems.forEach(o -> o.getItem().getName());
@@ -50,13 +51,14 @@ public class OrderApiController {
     return result;
   }
 
+  private final OrderQueryService orderQueryService;
   @GetMapping("/api/v3/orders")
   public List<OrderDto> ordersV3() {
     List<Order> orders = orderRepository.findAllWithItem();
     final List<OrderDto> result = orders.stream()
             .map(OrderDto::new)
             .collect(toList());
-
+//    orderQueryService.ordersV3();
     return result;
   }
 
