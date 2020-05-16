@@ -1,8 +1,10 @@
 package io.ssosso.jpashop1.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ssosso.jpashop1.domain.Order;
 import io.ssosso.jpashop1.domain.OrderSearch;
-import io.ssosso.jpashop1.repository.order.simplequery.OrderSimpleQueryDto;
+import io.ssosso.jpashop1.domain.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -10,6 +12,9 @@ import org.springframework.util.StringUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
+
+import static io.ssosso.jpashop1.domain.QMember.member;
+import static io.ssosso.jpashop1.domain.QOrder.order;
 
 @Repository
 @RequiredArgsConstructor
@@ -25,19 +30,19 @@ public class OrderRepository {
     return em.find(Order.class, id);
   }
 
-  public List<Order> findAll(OrderSearch orderSearch) {
-
-    // 동적쿼리 -> QueryDSL 강추, Criteria 비추
-
-
-    return em.createQuery("select o from Order o join o.member m " +
-            "where o.status =: status " +
-            "and m.name like :name", Order.class)
-            .setParameter("status", orderSearch.getOrderStatus())
-            .setParameter("name", orderSearch.getMemberName())
-            .setMaxResults(1000)  // 최대 1000건
-            .getResultList();
-  }
+//  public List<Order> findAll(OrderSearch orderSearch) {
+//
+//    // 동적쿼리 -> QueryDSL 강추, Criteria 비추
+//
+//
+//    return em.createQuery("select o from Order o join o.member m " +
+//            "where o.status =: status " +
+//            "and m.name like :name", Order.class)
+//            .setParameter("status", orderSearch.getOrderStatus())
+//            .setParameter("name", orderSearch.getMemberName())
+//            .setMaxResults(1000)  // 최대 1000건
+//            .getResultList();
+//  }
 
   public List<Order> findAllByString(OrderSearch orderSearch) {
     //language=JPAQL
@@ -70,6 +75,35 @@ public class OrderRepository {
       query = query.setParameter("name", orderSearch.getMemberName());
     }
     return query.getResultList();
+  }
+
+  public List<Order> findAll(OrderSearch orderSearch) {
+
+    JPAQueryFactory query = new JPAQueryFactory(em);
+
+    // QueryDsl -> JPQL 로 변환되어서 실행되며, 코드 가독성이 현저히 올라감
+    return query
+            .select(order)
+            .from(order)
+            .join(order.member, member)
+            .where(statusEq(orderSearch.getOrderStatus()), nameLike(orderSearch.getMemberName()))
+//            .where(order.status.eq(orderSearch.getOrderStatus()))
+            .limit(1000)
+            .fetch();
+  }
+
+  private BooleanExpression nameLike(String memberName) {
+    if (StringUtils.hasText(memberName)) {
+      return  null;
+    }
+    return member.name.like(memberName);
+  }
+
+  private BooleanExpression statusEq(OrderStatus orderStatus) {
+    if (orderStatus == null) {
+      return null;
+    }
+    return order.status.eq(orderStatus);
   }
 
   public List<Order> findAllWithMemberDelivery() {
