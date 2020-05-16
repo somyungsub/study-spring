@@ -2,6 +2,8 @@ package io.ssosso.jpashop1.api;
 
 import io.ssosso.jpashop1.domain.*;
 import io.ssosso.jpashop1.repository.OrderRepository;
+import io.ssosso.jpashop1.repository.order.query.OrderFlatDto;
+import io.ssosso.jpashop1.repository.order.query.OrderItemQueryDto;
 import io.ssosso.jpashop1.repository.order.query.OrderQueryDto;
 import io.ssosso.jpashop1.repository.order.query.OrderQueryRepository;
 import lombok.Getter;
@@ -12,8 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -76,6 +79,20 @@ public class OrderApiController {
   @GetMapping("/api/v5/orders")
   public List<OrderQueryDto> ordersV5() {
     return orderQueryRepository.findAllByDto_optimization();
+  }
+
+  @GetMapping("/api/v6/orders")
+  public List<OrderQueryDto> ordersV6() {
+    final List<OrderFlatDto> flats = orderQueryRepository.findAllByDto_flat();
+
+    // sql -> 중복되는 부분(필드상)을 제거 [4건 -> 2건] , OrderItem 처럼 컬렉션에 의해 row중복을 최적화
+    // Order 기준의 페이징은 안됨, OrderItem 기준으로 페이징을 해야함 -> 컬렉션에 따른 row
+    return flats.stream()
+            .collect(groupingBy(o -> new OrderQueryDto(o.getOrderId(), o.getName(), o.getOrderDate(), o.getOrderStatus(), o.getAddress()),
+                    mapping(o -> new OrderItemQueryDto(o.getOrderId(), o.getName(), o.getOrderPrice(), o.getCount()), toList())
+                    )).entrySet().stream()
+            .map(e -> new OrderQueryDto(e.getKey().getOrderId(), e.getKey().getName(), e.getKey().getOrderDate(), e.getKey().getOrderStatus(), e.getKey().getAddress(), e.getValue()))
+            .collect(toList());
   }
 
   @Getter

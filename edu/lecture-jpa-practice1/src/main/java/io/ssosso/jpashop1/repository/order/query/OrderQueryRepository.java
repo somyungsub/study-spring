@@ -20,12 +20,13 @@ public class OrderQueryRepository {
     // OrderItems 따로 채우기
     orders.forEach(o -> {
       List<OrderItemQueryDto> orderItems = findOrderItems(o.getOrderId()); // N개
-      o.setOorderItems(orderItems);
+      o.setOrderItems(orderItems);
     });
 
     return orders;
   }
 
+  // v4 쿼리 최적화
   private List<OrderItemQueryDto> findOrderItems(Long orderId) {
     return em.createQuery(
             "select new io.ssosso.jpashop1.repository.order.query.OrderItemQueryDto(oi.order.id, i.name, oi.orderPrice, oi.count) " +
@@ -44,12 +45,13 @@ public class OrderQueryRepository {
                     "join o.delivery d", OrderQueryDto.class).getResultList();
   }
 
+  // v5 컬렉션 조회 최적화
   public List<OrderQueryDto> findAllByDto_optimization() {
 
     List<OrderQueryDto> orders = findOrders();
     Map<Long, List<OrderItemQueryDto>> orderItemMap = findOrderItemMap(toOrderIds(orders));
 
-    orders.forEach(o->o.setOorderItems(orderItemMap.get(o.getOrderId())));
+    orders.forEach(o->o.setOrderItems(orderItemMap.get(o.getOrderId())));
 
     return orders;
   }
@@ -72,5 +74,17 @@ public class OrderQueryRepository {
     return orders.stream()
               .map(OrderQueryDto::getOrderId)
               .collect(Collectors.toList());
+  }
+
+  // v6
+  public List<OrderFlatDto> findAllByDto_flat() {
+    return em.createQuery(
+            "select new io.ssosso.jpashop1.repository.order.query.OrderFlatDto(o.id, m.name, o.orderDate, o.status,d.address,i.name,oi.orderPrice,oi.count)" +
+                    "from Order o " +
+                    "join o.member m " +
+                    "join o.delivery d " +
+                    "join o.orderItems oi " +
+                    "join oi.item i", OrderFlatDto.class
+    ).getResultList();
   }
 }
