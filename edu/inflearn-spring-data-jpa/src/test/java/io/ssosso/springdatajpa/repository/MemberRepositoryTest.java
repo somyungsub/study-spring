@@ -94,6 +94,13 @@ class MemberRepositoryTest {
     System.out.println("result = " + result);
   }
 
+  @Test
+  public void query_repo() {
+    createMember();
+    List<Member> result = memberRepository.findUser("AAA", 10);
+    System.out.println("result = " + result);
+  }
+
   private void createMember() {
     Member member1 = new Member("AAA", 10);
     Member member2 = new Member("AAA", 20);

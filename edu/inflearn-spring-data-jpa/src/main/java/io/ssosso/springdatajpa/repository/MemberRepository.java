@@ -15,4 +15,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   // Named Query -> @Param은 :username 과 매핑, 실무에서 거의 사용을 안함
 //  @Query(name = "Member.findByUsername")  // 생략해도 작동함, 관례 : 엔티티명.메서드명 으로 name을 찾음, 없으면 메서드네임쿼리로 실행
   List<Member> findByUsername(@Param("username") String username);
+
+  // 실무에서 많이씀 -> jpql
+  @Query("select m from Member m where m.username = :username and m.age = :age")
+  List<Member> findUser(@Param("username") String username, @Param("age")int age);
 }
