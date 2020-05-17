@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -130,10 +131,25 @@ class MemberRepositoryTest {
   }
 
   @Test
-  public void findByNames() {
+  public void find_names() {
     createMember();
     List<Member> byNames = memberRepository.findByNames(Arrays.asList("AAA", "CCC"));
     byNames.forEach(System.out::println);
+  }
+
+  @Test
+  public void return_type() {
+    createMember();
+
+    List<Member> list = memberRepository.findListByUsername("AAA");
+    System.out.println("list = " + list);
+    
+    Member one = memberRepository.findMemberByUsername("CCC");
+    System.out.println("one = " + one);
+
+    Optional<Member> optional = memberRepository.findOptionalByUsername("CCC");
+    System.out.println("optional.get() = " + optional.get());
+
   }
 
   private void createMember() {
