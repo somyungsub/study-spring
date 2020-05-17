@@ -1,6 +1,8 @@
 package io.ssosso.springdatajpa.repository;
 
+import io.ssosso.springdatajpa.dto.MemberDto;
 import io.ssosso.springdatajpa.entity.Member;
+import io.ssosso.springdatajpa.entity.Team;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +20,9 @@ class MemberRepositoryTest {
 
   @Autowired
   MemberRepository memberRepository;
+
+  @Autowired
+  TeamRepository teamRepository;
 
   @Test
   public void test() {
@@ -101,12 +106,36 @@ class MemberRepositoryTest {
     System.out.println("result = " + result);
   }
 
+  @Test
+  public void find_username_list() {
+    createMember();
+    List<String> usernameList = memberRepository.findUsernameList();
+    usernameList.forEach(System.out::println);
+  }
+
+  @Test
+  public void find_memberdto() {
+    Team team = new Team("teamA");
+    teamRepository.save(team);
+
+
+    Member m1 = new Member("AAA", 10);
+    m1.setTeam(team);
+    memberRepository.save(m1);
+
+
+    List<MemberDto> memberDto = memberRepository.findMemberDto();
+    memberDto.forEach(System.out::println);
+  }
+
   private void createMember() {
     Member member1 = new Member("AAA", 10);
     Member member2 = new Member("AAA", 20);
+    Member member3 = new Member("CCC", 20);
 
     memberRepository.save(member1);
     memberRepository.save(member2);
+    memberRepository.save(member3);
   }
 
 }
