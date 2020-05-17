@@ -1,6 +1,7 @@
 package io.ssosso.springdatajpa.repository;
 
 import io.ssosso.springdatajpa.dto.MemberDto;
+import io.ssosso.springdatajpa.dto.UsernameOnlyDto;
 import io.ssosso.springdatajpa.entity.Member;
 import io.ssosso.springdatajpa.entity.Team;
 import org.junit.jupiter.api.DisplayName;
@@ -546,6 +547,111 @@ class MemberRepositoryTest {
     List<Member> result = memberRepository.findAll(example);
 
     assertThat(result.get(0).getUsername()).isEqualTo("m1");
+  }
+
+  @Test
+  @DisplayName("projections")
+  public void projections() {
+    Team teamA = new Team("teamA");
+    em.persist(teamA);
+
+    Member m1 = new Member("m1", 0, teamA);
+    Member m2 = new Member("m2", 0, teamA);
+    em.persist(m1);
+    em.persist(m2);
+
+    em.flush();
+    em.clear();
+
+    // when
+    List<UsernameOnly> findName = memberRepository.findProjectionByUsername("m1");
+    findName.forEach(usernameOnly -> System.out.println("username : "+usernameOnly.getUsername()));
+  }
+  @Test
+  @DisplayName("projections-dto")
+  public void projections_dto() {
+    Team teamA = new Team("teamA");
+    em.persist(teamA);
+
+    Member m1 = new Member("m1", 0, teamA);
+    Member m2 = new Member("m2", 0, teamA);
+    em.persist(m1);
+    em.persist(m2);
+
+    em.flush();
+    em.clear();
+
+    // when
+    List<UsernameOnlyDto> findName = memberRepository.findProjectionDtoByUsername("m1");
+    findName.forEach(dto -> System.out.println("username : " + dto.getUsername()));
+
+    List<UsernameOnlyDto> findName2 = memberRepository.findProjectionDtoByUsername("m1",UsernameOnlyDto.class);
+    findName2.forEach(dto -> System.out.println("username : "+dto.getUsername()));
+  }
+
+  @Test
+  @DisplayName("projections-중첩")
+  public void projections_nested() {
+    Team teamA = new Team("teamA");
+    em.persist(teamA);
+
+    Member m1 = new Member("m1", 0, teamA);
+    Member m2 = new Member("m2", 0, teamA);
+    em.persist(m1);
+    em.persist(m2);
+
+    em.flush();
+    em.clear();
+
+    // when
+    List<NestedClosedProjections> findName = memberRepository.findProjectionDtoByUsername("m1", NestedClosedProjections.class);
+    findName.forEach(dto -> {
+      System.out.println("username : " + dto.getUsername());
+      System.out.println("dto.getTeam().getName() = " + dto.getTeam().getName()); // 최적화안됨.. 모든 team 정보 컬럼조
+    });
+  }
+
+  @Test
+  @DisplayName("네이티브 쿼리 - 가급적 사용 하지말것")
+  public void native_query() {
+    Team teamA = new Team("teamA");
+    em.persist(teamA);
+
+    Member m1 = new Member("m1", 0, teamA);
+    Member m2 = new Member("m2", 0, teamA);
+    em.persist(m1);
+    em.persist(m2);
+
+    em.flush();
+    em.clear();
+
+    // when
+    Member findMember = memberRepository.findByNativeQuery("m1");
+    System.out.println("findMember = " + findMember);
+  }
+
+  @Test
+  @DisplayName("네이티브 쿼리 + Projection")
+  public void native_projection() {
+    Team teamA = new Team("teamA");
+    em.persist(teamA);
+
+    Member m1 = new Member("m1", 0, teamA);
+    Member m2 = new Member("m2", 0, teamA);
+    em.persist(m1);
+    em.persist(m2);
+
+    em.flush();
+    em.clear();
+
+    // when
+    Page<MemberProjection> page = memberRepository.findByNativeProjection(PageRequest.of(0, 10));
+    List<MemberProjection> content = page.getContent();
+    content.forEach(m -> {
+      System.out.println("m.getUsername() = " + m.getUsername());
+      System.out.println("m.getTeamName() = " + m.getTeamName());
+    });
+
   }
 
 
