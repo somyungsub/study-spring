@@ -2,6 +2,17 @@ package io.ssosso.springdatajpa.repository;
 
 import io.ssosso.springdatajpa.entity.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
+  List<Member> findByUsernameAndAgeGreaterThan(String username, int age);
+
+  List<Member> findTop3MemberBy();
+
+  // Named Query -> @Param은 :username 과 매핑, 실무에서 거의 사용을 안함
+//  @Query(name = "Member.findByUsername")  // 생략해도 작동함, 관례 : 엔티티명.메서드명 으로 name을 찾음, 없으면 메서드네임쿼리로 실행
+  List<Member> findByUsername(@Param("username") String username);
 }

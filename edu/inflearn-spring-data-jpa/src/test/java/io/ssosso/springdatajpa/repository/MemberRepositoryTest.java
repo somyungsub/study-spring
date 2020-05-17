@@ -71,6 +71,35 @@ class MemberRepositoryTest {
 
   }
 
+  @Test
+  public void findByUsernameAngAge() {
+    createMember();
 
+    List<Member> result = memberRepository.findByUsernameAndAgeGreaterThan("AAA", 15);
+    assertThat(result.get(0).getUsername()).isEqualTo("AAA");
+    assertThat(result.get(0).getAge()).isEqualTo(20);
+  }
+
+  @Test
+  public void top3() {
+    createMember();
+    List<Member> top3 = memberRepository.findTop3MemberBy();
+    System.out.println("top3 = " + top3);
+  }
+
+  @Test
+  public void namedQuery() {
+    createMember();
+    List<Member> result = memberRepository.findByUsername("AAA");
+    System.out.println("result = " + result);
+  }
+
+  private void createMember() {
+    Member member1 = new Member("AAA", 10);
+    Member member2 = new Member("AAA", 20);
+
+    memberRepository.save(member1);
+    memberRepository.save(member2);
+  }
 
 }

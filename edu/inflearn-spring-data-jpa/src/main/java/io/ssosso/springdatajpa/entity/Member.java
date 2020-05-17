@@ -9,9 +9,16 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(of = {"id", "username", "age"}) // 연관관계 필드는 toString x -> 순환참조에 걸릴 수 있음
+@NamedQueries(
+        @NamedQuery(
+                name = "Member.findByUsername",
+                query = "select m from Member m where m.username =: username"
+        )
+)
 public class Member {
 
-  @Id @GeneratedValue
+  @Id
+  @GeneratedValue
   @Column(name = "member_id") // 관례상 테이블_id
   private Long id;
   private String username;
@@ -32,7 +39,14 @@ public class Member {
   public Member(String username, int age, Team team) {
     this.username = username;
     this.age = age;
-    this.team = team;
+    if (team != null) {
+      changeTeam(team);
+    }
+  }
+
+  public Member(String username, int age) {
+    this.username = username;
+    this.age = age;
   }
 
 

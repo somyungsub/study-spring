@@ -69,5 +69,29 @@ class MemberJpaRepositoryTest {
 
   }
 
+  @Test
+  public void findByUsernameAngAge() {
+    createMember();
+
+    List<Member> result = memberJpaRepository.findByUsernameAndAgeGreaterThan("AAA", 15);
+    assertThat(result.get(0).getUsername()).isEqualTo("AAA");
+    assertThat(result.get(0).getAge()).isEqualTo(20);
+  }
+
+
+  @Test
+  public void namedQuery() {
+    createMember();
+    List<Member> result = memberJpaRepository.findByUsername("AAA");
+    System.out.println("result = " + result);
+  }
+
+  private void createMember() {
+    Member member1 = new Member("AAA", 10);
+    Member member2 = new Member("AAA", 20);
+
+    memberJpaRepository.save(member1);
+    memberJpaRepository.save(member2);
+  }
 
 }
