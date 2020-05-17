@@ -213,6 +213,60 @@ class MemberRepositoryTest {
     assertThat(slice.hasNext()).isTrue();
   }
 
+  @Test
+  @DisplayName("페이징-count 쿼리 최적화")
+  public void page_count() {
+
+    // given
+    memberRepository.save(new Member("member1", 10));
+    memberRepository.save(new Member("member2", 10));
+    memberRepository.save(new Member("member3", 10));
+    memberRepository.save(new Member("member4", 10));
+    memberRepository.save(new Member("member5", 10));
+
+    int age = 10;
+    PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+
+    // when
+    Page<Member> page = memberRepository.findQueryByAge(age, pageRequest);
+    page.getContent().stream()
+            .forEach(member -> System.out.println("member = " + member));
+
+    // then
+    assertThat(page.get().count()).isEqualTo(3);
+    assertThat(page.getNumber()).isEqualTo(0);
+    assertThat(page.isFirst()).isTrue();
+    assertThat(page.hasNext()).isTrue();
+  }
+
+  @Test
+  @DisplayName("페이징-entity -> dto")
+  public void page_entity_dto() {
+
+    // given
+    memberRepository.save(new Member("member1", 10));
+    memberRepository.save(new Member("member2", 10));
+    memberRepository.save(new Member("member3", 10));
+    memberRepository.save(new Member("member4", 10));
+    memberRepository.save(new Member("member5", 10));
+
+    int age = 10;
+    PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+
+    // when
+    Page<Member> page = memberRepository.findByAge(age, pageRequest);
+    page.map(m -> new MemberDto(m.getId(), m.getUsername(), null))
+        .get().forEach(System.out::println);
+
+    // then
+    assertThat(page.get().count()).isEqualTo(3);
+    assertThat(page.getNumber()).isEqualTo(0);
+    assertThat(page.isFirst()).isTrue();
+    assertThat(page.hasNext()).isTrue();
+  }
+
 
   private void createMember() {
     Member member1 = new Member("AAA", 10);

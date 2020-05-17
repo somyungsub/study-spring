@@ -35,7 +35,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
   @Query("select m from Member m where m.username in :names")
   List<Member> findByNames(@Param("names") Collection<String> names);
 
-
+  // 반환타입 + @ (doc 찾아보기)
   List<Member> findListByUsername(String username);         // 컬렉션
   Member findMemberByUsername(String username);             // 단건
   Optional<Member> findOptionalByUsername(String username); // Optional
@@ -43,7 +43,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
   // 페이징 및 정렬
   Page<Member> findByAge(int age, Pageable pageable);
-
   Slice<Member> findSliceByAge(int age, Pageable pageable);
+
+  @Query(value = "select m from Member m left join m.team t",
+         countQuery="select count(m) from Member m")
+  Page<Member> findQueryByAge(int age, Pageable pageable);
 
 }
