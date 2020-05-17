@@ -3,9 +3,13 @@ package io.ssosso.springdatajpa.repository;
 import io.ssosso.springdatajpa.dto.MemberDto;
 import io.ssosso.springdatajpa.entity.Member;
 import io.ssosso.springdatajpa.entity.Team;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -151,6 +155,36 @@ class MemberRepositoryTest {
     System.out.println("optional.get() = " + optional.get());
 
   }
+
+  @Test
+  @DisplayName("페이징")
+  public void paging() {
+
+    // given
+    memberRepository.save(new Member("member1", 10));
+    memberRepository.save(new Member("member2", 10));
+    memberRepository.save(new Member("member3", 10));
+    memberRepository.save(new Member("member4", 10));
+    memberRepository.save(new Member("member5", 10));
+
+    int age = 10;
+    PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+
+    // when
+    Page<Member> page = memberRepository.findByAge(age, pageRequest);
+    page.getContent().stream()
+            .forEach(member -> System.out.println("member = " + member));
+
+    // then
+    assertThat(page.get().count()).isEqualTo(3);
+    assertThat(page.getTotalElements()).isEqualTo(5);
+    assertThat(page.getNumber()).isEqualTo(0);
+    assertThat(page.getTotalPages()).isEqualTo(2);
+    assertThat(page.isFirst()).isTrue();
+    assertThat(page.hasNext()).isTrue();
+  }
+
 
   private void createMember() {
     Member member1 = new Member("AAA", 10);
