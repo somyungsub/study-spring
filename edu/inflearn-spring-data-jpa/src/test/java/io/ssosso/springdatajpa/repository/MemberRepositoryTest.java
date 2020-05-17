@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -183,6 +184,33 @@ class MemberRepositoryTest {
     assertThat(page.getTotalPages()).isEqualTo(2);
     assertThat(page.isFirst()).isTrue();
     assertThat(page.hasNext()).isTrue();
+  }
+
+  @Test
+  @DisplayName("슬라이싱")
+  public void slice() {
+
+    // given
+    memberRepository.save(new Member("member1", 10));
+    memberRepository.save(new Member("member2", 10));
+    memberRepository.save(new Member("member3", 10));
+    memberRepository.save(new Member("member4", 10));
+    memberRepository.save(new Member("member5", 10));
+
+    int age = 10;
+    PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "username"));
+
+
+    // when
+    Slice<Member> slice = memberRepository.findSliceByAge(age, pageRequest);
+    slice.getContent().stream()
+            .forEach(member -> System.out.println("member = " + member));
+
+    // then
+    assertThat(slice.get().count()).isEqualTo(3);
+    assertThat(slice.getNumber()).isEqualTo(0);
+    assertThat(slice.isFirst()).isTrue();
+    assertThat(slice.hasNext()).isTrue();
   }
 
 
