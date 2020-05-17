@@ -445,6 +445,54 @@ class MemberRepositoryTest {
     });
   }
 
+  @Test
+  @DisplayName("JPA 힌트")
+  public void query_hint() {
+
+    // given
+    Member member1 = new Member("member1", 10);
+    memberRepository.save(member1);
+    em.flush();
+    em.clear();
+
+    // when
+    Member findMember = memberRepository.findById(member1.getId()).get();
+    findMember.setUsername("member2");
+
+    em.flush(); // 변경 감지 -> update
+  }
+
+  @Test
+  @DisplayName("JPA 힌트")
+  public void query_hint2() {
+
+    // given
+    Member member1 = new Member("member1", 10);
+    memberRepository.save(member1);
+    em.flush();
+    em.clear();
+
+    // when
+    Member findMember = memberRepository.findReadOnlyByUsername("member1");
+    findMember.setUsername("member2");  // 변경자체가 안됨 , update 실행 안됨
+
+    em.flush(); // 변경 감지 -> update
+  }
+
+  @Test
+  @DisplayName("Lock")
+  public void lock() {
+
+    // given
+    Member member1 = new Member("member1", 10);
+    memberRepository.save(member1);
+    em.flush();
+    em.clear();
+
+    // when
+    List<Member> list = memberRepository.findLockByUsername("member1");
+  }
+
 
   private void createMember() {
     Member member1 = new Member("AAA", 10);
