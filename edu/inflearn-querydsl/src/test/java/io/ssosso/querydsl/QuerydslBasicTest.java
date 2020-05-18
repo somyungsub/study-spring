@@ -2,6 +2,8 @@ package io.ssosso.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ssosso.querydsl.entity.Member;
@@ -474,6 +476,58 @@ public class QuerydslBasicTest {
             .fetch();
 
     result.forEach(System.out::println);
+  }
 
+  @Test
+  @DisplayName("case 문")
+  public void case_basic() {
+    List<String> result = queryFactory
+            .select(member.age
+                    .when(10).then("열살")
+                    .when(20).then("스무살")
+                    .otherwise("기타")
+            )
+            .from(member)
+            .fetch();
+
+    result.forEach(System.out::println);
+  }
+
+  @Test
+  @DisplayName("case 복작")
+  public void case_complex() {
+    List<String> result = queryFactory
+            .select(new CaseBuilder()
+                    .when(member.age.between(0, 20)).then("0~20살")
+                    .when(member.age.between(21, 30)).then("21~30살")
+                    .otherwise("기타"))
+            .from(member)
+            .fetch();
+
+    result.forEach(System.out::println);
+  }
+
+  @Test
+  @DisplayName("상수")
+  public void constant() {
+    List<Tuple> result = queryFactory
+            .select(member.username, Expressions.constant("A"))
+            .from(member)
+            .fetch();
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("문자더하기")
+  public void concat() {
+
+    // {username}_{age}
+    List<String> result = queryFactory
+            .select(member.username.concat("_").concat(member.age.stringValue())) // stringValue 잘 쓰임,
+            .from(member)
+            .where(member.username.eq("member1"))
+            .fetch();
+
+    result.forEach(o -> System.out.println("o = " + o));
   }
 }
