@@ -1,9 +1,11 @@
 package io.ssosso.querydsl;
 
 import com.querydsl.core.QueryResults;
+import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ssosso.querydsl.entity.Member;
 import io.ssosso.querydsl.entity.QMember;
+import io.ssosso.querydsl.entity.QTeam;
 import io.ssosso.querydsl.entity.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +18,7 @@ import javax.persistence.EntityManager;
 import java.util.List;
 
 import static io.ssosso.querydsl.entity.QMember.member;
+import static io.ssosso.querydsl.entity.QTeam.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -221,5 +224,52 @@ public class QuerydslBasicTest {
     assertThat(results.getResults().size()).isEqualTo(2);
   }
 
+  @Test
+  @DisplayName("집합")
+  public void aggregation() {
+    List<Tuple> result = queryFactory
+            .select(
+                    member.count(),
+                    member.age.sum(),
+                    member.age.avg(),
+                    member.age.max(),
+                    member.age.min()
+            )
+            .from(member)
+            .fetch();
+
+    Tuple tuple = result.get(0);
+    assertThat(tuple.get(member.count())).isEqualTo(4);
+    assertThat(tuple.get(member.age.sum())).isEqualTo(100);
+    assertThat(tuple.get(member.age.avg())).isEqualTo(25);
+    assertThat(tuple.get(member.age.max())).isEqualTo(40);
+    assertThat(tuple.get(member.age.min())).isEqualTo(10);
+  }
+
+
+  /**
+   * 팀의 이름과 각팀의 평균 연령을 구해라.
+   */
+  @Test
+  @DisplayName("그룹바이")
+  public void group_by() throws Exception {
+    // given
+    List<Tuple> result = queryFactory
+            .select(team.name, member.age.avg())
+            .from(member)
+            .join(member.team, team)
+            .groupBy(team.name)
+            .fetch();
+
+    Tuple teamA = result.get(0);
+    Tuple teamB = result.get(1);
+
+    assertThat(teamA.get(team.name)).isEqualTo("teamA");
+    assertThat(teamA.get(member.age.avg())).isEqualTo(15);  // (10+20) / 2
+
+    assertThat(teamB.get(team.name)).isEqualTo("teamB");
+    assertThat(teamB.get(member.age.avg())).isEqualTo(35);  // (30+40) / 2
+
+  }
 
 }
