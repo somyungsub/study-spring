@@ -1,5 +1,6 @@
 package io.ssosso.querydsl;
 
+import com.querydsl.core.QueryResults;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ssosso.querydsl.entity.Member;
 import io.ssosso.querydsl.entity.QMember;
@@ -118,6 +119,33 @@ public class QuerydslBasicTest {
             .fetchOne();
 
     assertThat(findMember.getUsername()).isEqualTo("member1");
+  }
+
+  @Test
+  public void resultFetch() {
+    List<Member> fetch = queryFactory
+            .selectFrom(member)
+            .fetch();
+
+    Member fetchOne = queryFactory
+            .selectFrom(QMember.member)
+            .fetchOne();
+
+    Member fetchFirst = queryFactory
+            .selectFrom(QMember.member)
+            .fetchFirst();
+
+    QueryResults<Member> results = queryFactory
+            .selectFrom(QMember.member)
+            .fetchResults();
+
+    results.getTotal();
+    List<Member> content = results.getResults();
+
+    long total = queryFactory
+            .selectFrom(member)
+            .fetchCount();
+
   }
 
 }
