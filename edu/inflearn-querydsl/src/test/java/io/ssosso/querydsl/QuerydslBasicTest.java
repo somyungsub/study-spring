@@ -530,4 +530,29 @@ public class QuerydslBasicTest {
 
     result.forEach(o -> System.out.println("o = " + o));
   }
+
+  @Test
+  @DisplayName("프로젝션-1개인경우")
+  public void projection_one() {
+    List<String> result = queryFactory
+            .select(member.username)
+            .from(member)
+            .fetch();
+
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("프로젝션-2개이상")
+  public void projection_tuple() {
+    List<Tuple> result = queryFactory
+            .select(member.username, member.age)
+            .from(member)
+            .fetch();
+
+    result.forEach(tuple -> {
+      System.out.println("tuple.get(member.username) = " + tuple.get(member.username));
+      System.out.println("tuple.get(member.age) = " + tuple.get(member.age));
+    });
+  }
 }
