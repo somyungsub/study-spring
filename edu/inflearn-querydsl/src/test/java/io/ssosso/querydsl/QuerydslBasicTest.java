@@ -5,7 +5,6 @@ import com.querydsl.core.Tuple;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ssosso.querydsl.entity.Member;
 import io.ssosso.querydsl.entity.QMember;
-import io.ssosso.querydsl.entity.QTeam;
 import io.ssosso.querydsl.entity.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,10 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 import java.util.List;
 
 import static io.ssosso.querydsl.entity.QMember.member;
-import static io.ssosso.querydsl.entity.QTeam.*;
+import static io.ssosso.querydsl.entity.QTeam.team;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -358,5 +359,42 @@ public class QuerydslBasicTest {
             .fetch();
 
     result.forEach(System.out::println);
+  }
+
+  @PersistenceUnit
+  EntityManagerFactory emf;
+
+  @Test
+  @DisplayName("페치조인 미적용")
+  public void fetch_join_no() {
+    em.flush();
+    em.clear();
+
+    Member findMemer = queryFactory
+            .selectFrom(member)
+            .where(member.username.eq("member1"))
+            .fetchOne();
+    System.out.println("findMemer = " + findMemer);
+
+    boolean loaded = emf.getPersistenceUnitUtil().isLoaded(findMemer.getTeam());
+    assertThat(loaded).as("페치조인 미적용").isFalse();
+  }
+
+  @Test
+  @DisplayName("페치조인 적용")
+  public void fetch_join() {
+    em.flush();
+    em.clear();
+
+    Member findMemer = queryFactory
+            .selectFrom(member)
+            .join(member.team, team)
+            .fetchJoin()  // 페치 조인
+            .where(member.username.eq("member1"))
+            .fetchOne();
+    System.out.println("findMemer = " + findMemer);
+
+    boolean loaded = emf.getPersistenceUnitUtil().isLoaded(findMemer.getTeam());
+    assertThat(loaded).as("페치조인 적용").isTrue();
   }
 }
