@@ -6,6 +6,7 @@ import io.ssosso.querydsl.entity.Member;
 import io.ssosso.querydsl.entity.QMember;
 import io.ssosso.querydsl.entity.Team;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,6 +47,7 @@ public class QuerydslBasicTest {
   }
 
   @Test
+  @DisplayName("JPQL 기본사용")
   public void start_jqpl() {
     // member1을 찾아라.
     String sql = "select m from Member m where m.username = :username";
@@ -57,6 +59,7 @@ public class QuerydslBasicTest {
   }
 
   @Test
+  @DisplayName("기본사용법")
   public void start_querydsl() {
 
     QMember m = new QMember("m"); // 구분자 이름 주는 것임.
@@ -72,6 +75,7 @@ public class QuerydslBasicTest {
   }
 
   @Test
+  @DisplayName("q-type import static")
   public void start_querydsl_qtype() {
 
     Member findMember = queryFactory
@@ -85,6 +89,7 @@ public class QuerydslBasicTest {
   }
 
   @Test
+  @DisplayName("q-type 별칭 ")
   public void start_querydsl_qtype2() {
     QMember m1 = new QMember("m1");
     Member findMember = queryFactory
@@ -98,6 +103,7 @@ public class QuerydslBasicTest {
   }
 
   @Test
+  @DisplayName("검색조회")
   public void search() {
     Member findMember = queryFactory
             .selectFrom(member)
@@ -109,6 +115,7 @@ public class QuerydslBasicTest {
   }
 
   @Test
+  @DisplayName("검색조회 - 파라미터 and")
   public void search_and_param() {
     Member findMember = queryFactory
             .selectFrom(member)
@@ -122,30 +129,39 @@ public class QuerydslBasicTest {
   }
 
   @Test
+  @DisplayName("결과조회")
   public void resultFetch() {
+
+    // 다건
     List<Member> fetch = queryFactory
             .selectFrom(member)
             .fetch();
 
+    // 단건 2개이상 예외발생
     Member fetchOne = queryFactory
             .selectFrom(QMember.member)
             .fetchOne();
 
+    // 발견 첫째
     Member fetchFirst = queryFactory
             .selectFrom(QMember.member)
             .fetchFirst();
 
+    // 결과 -> Page 정보 동반
     QueryResults<Member> results = queryFactory
             .selectFrom(QMember.member)
             .fetchResults();
 
+    // count 조회 쿼리 발생
     results.getTotal();
     List<Member> content = results.getResults();
 
+    // count 조회 쿼리
     long total = queryFactory
             .selectFrom(member)
             .fetchCount();
-
   }
+
+
 
 }
