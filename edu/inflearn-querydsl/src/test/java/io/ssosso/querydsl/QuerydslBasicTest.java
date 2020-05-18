@@ -2,10 +2,15 @@ package io.ssosso.querydsl;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.ssosso.querydsl.dto.MemberDto;
+import io.ssosso.querydsl.dto.UserDto;
 import io.ssosso.querydsl.entity.Member;
 import io.ssosso.querydsl.entity.QMember;
 import io.ssosso.querydsl.entity.Team;
@@ -554,5 +559,91 @@ public class QuerydslBasicTest {
       System.out.println("tuple.get(member.username) = " + tuple.get(member.username));
       System.out.println("tuple.get(member.age) = " + tuple.get(member.age));
     });
+  }
+
+  @Test
+  @DisplayName("DTO 조회 - JPQL")
+  public void find_dto_by_jpql() {
+    List<MemberDto> result = em.createQuery(
+            "select new io.ssosso.querydsl.dto.MemberDto(m.username, m.age) " +
+                    "from Member m", MemberDto.class)
+            .getResultList();
+
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("DTO 조회 - QueryDsl [setter]")
+  public void find_dto_by_querydsl_setter() {
+    List<MemberDto> result = queryFactory
+            .select(Projections.bean(
+                    MemberDto.class,
+                    member.username,
+                    member.age))
+            .from(member)
+            .fetch();
+
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("DTO 조회 - QueryDsl [field]")
+  public void find_dto_by_querydsl_field() {
+    List<MemberDto> result = queryFactory
+            .select(Projections.fields(
+                    MemberDto.class,
+                    member.username,
+                    member.age))
+            .from(member)
+            .fetch();
+
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("DTO 조회 - QueryDsl [field-별칭]")
+  public void find_dto_by_querydsl_field_alias() {
+    List<UserDto> result = queryFactory
+            .select(Projections.fields(
+                    UserDto.class,
+                    member.username.as("name"), // field명이 다른 경우 세팅법
+                    member.age))
+            .from(member)
+            .fetch();
+
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("DTO 조회 - QueryDsl [field-별칭]")
+  public void find_dto_by_querydsl_field_alias2() {
+    // 예제를 위한 예제
+    QMember memberSub = new QMember("memberSub");
+    List<UserDto> result = queryFactory
+            .select(Projections.fields(
+                    UserDto.class,
+                    member.username.as("name"),
+                    ExpressionUtils.as(JPAExpressions
+                                        .select(memberSub.age.max())
+                                        .from(memberSub), "age"))
+            )
+            .from(member)
+            .fetch();
+
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("DTO 조회 - QueryDsl [constructor]")
+  public void find_dto_by_querydsl_constructor() {
+    List<MemberDto> result = queryFactory
+            .select(Projections.constructor(
+                    MemberDto.class,
+                    member.username,
+                    member.age))
+            .from(member)
+            .fetch();
+
+    result.forEach(o -> System.out.println("o = " + o));
   }
 }
