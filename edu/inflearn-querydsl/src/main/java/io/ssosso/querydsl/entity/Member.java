@@ -8,15 +8,8 @@ import javax.persistence.*;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(of = {"id", "username", "age"}) // 연관관계 필드는 toString x -> 순환참조에 걸릴 수 있음
-@NamedQueries(
-        @NamedQuery(
-                name = "Member.findByUsername",
-                query = "select m from Member m where m.username =: username"
-        )
-)
-@NamedEntityGraph(name = "Member.all", attributeNodes = @NamedAttributeNode("team"))
-public class Member extends BaseEntity{
+@ToString(of = {"id", "username", "age"})
+public class Member {
 
   @Id
   @GeneratedValue
@@ -29,12 +22,14 @@ public class Member extends BaseEntity{
   @JoinColumn(name = "team_id")
   private Team team;
 
-  // JPA -> 기본적으로 ,디폴트 생성자 필수 -> Proxy 기술을 사용할 때 필요하게 됨. private는 안됨 그래서
-//  protected Member() {
-//  }
 
   public Member(String username) {
-    this.username = username;
+    this(username, 0);
+  }
+
+
+  public Member(String username, int age) {
+    this(username, age, null);
   }
 
   public Member(String username, int age, Team team) {
@@ -43,11 +38,6 @@ public class Member extends BaseEntity{
     if (team != null) {
       changeTeam(team);
     }
-  }
-
-  public Member(String username, int age) {
-    this.username = username;
-    this.age = age;
   }
 
 

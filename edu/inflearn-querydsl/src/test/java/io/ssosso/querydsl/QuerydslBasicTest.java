@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static io.ssosso.querydsl.entity.QMember.member;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -63,6 +64,32 @@ public class QuerydslBasicTest {
             .select(m)
             .from(m)
             .where(m.username.eq("member1"))
+            .fetchOne();
+
+    assertThat(findMember.getUsername()).isEqualTo("member1");
+
+  }
+
+  @Test
+  public void start_querydsl_qtype() {
+
+    Member findMember = queryFactory
+            .select(member)
+            .from(member)
+            .where(member.username.eq("member1"))
+            .fetchOne();
+
+    assertThat(findMember.getUsername()).isEqualTo("member1");
+
+  }
+
+  @Test
+  public void start_querydsl_qtype2() {
+    QMember m1 = new QMember("m1");
+    Member findMember = queryFactory
+            .select(m1)
+            .from(m1)
+            .where(m1.username.eq("member1"))
             .fetchOne();
 
     assertThat(findMember.getUsername()).isEqualTo("member1");
