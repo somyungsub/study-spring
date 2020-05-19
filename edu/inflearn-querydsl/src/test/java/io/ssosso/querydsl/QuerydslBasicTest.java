@@ -5,7 +5,9 @@ import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.ExpressionUtils;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
@@ -668,6 +670,41 @@ public class QuerydslBasicTest {
 
     List<Member> result = searchMember1(usernameParam, ageParam);
     assertThat(result.size()).isEqualTo(1);
+  }
+
+  @Test
+  @DisplayName("동적쿼리-where 다중 파라미터 ")
+  public void where_multi_parameter() {
+    String usernameParam = "member1";
+    Integer ageParam = null;
+
+    List<Member> result = searchMember2(usernameParam, ageParam);
+    assertThat(result.size()).isEqualTo(1);
+  }
+
+  private List<Member> searchMember2(String usernameParam, Integer ageParam) {
+    return queryFactory
+            .selectFrom(member)
+            .where(allEq(usernameParam, ageParam))
+//            .where(usernameEq(usernameParam), ageEq(ageParam))
+            .fetch();
+  }
+
+
+  /*
+      조립이 가능하다... 재사용 극대화 가능
+      - 광고상태 isValid , 날짜 IN is~  등등...
+   */
+  private BooleanExpression allEq(String usernameParam, Integer ageParam) {
+    return usernameEq(usernameParam).and(ageEq(ageParam));
+  }
+
+  private BooleanExpression ageEq(Integer ageParam) {
+    return ageParam == null ? null : member.age.eq(ageParam);
+  }
+
+  private BooleanExpression usernameEq(String usernameParam) {
+    return usernameParam == null ? null : member.username.eq(usernameParam);
   }
 
   private List<Member> searchMember1(String usernameParam, Integer ageParam) {
