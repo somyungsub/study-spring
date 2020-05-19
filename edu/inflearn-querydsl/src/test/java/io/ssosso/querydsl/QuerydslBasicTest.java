@@ -722,13 +722,13 @@ public class QuerydslBasicTest {
   }
 
   @Test
-  @DisplayName("bulk_add")
+  @DisplayName("벌크 수정")
+  @Commit
   public void bulk_add() {
     // 쿼리 확인
     long count = queryFactory
             .update(member)
             .set(member.age, member.age.add(1))
-//            .set(member.age, member.age.add(-1))
 //            .set(member.age, member.age.subtract(2))
 //            .set(member.age, member.age.multiply(2))
 //            .set(member.age, member.age.divide(2))
@@ -737,13 +737,57 @@ public class QuerydslBasicTest {
   }
 
   @Test
-  @DisplayName("bulk_delete")
+  @DisplayName("벌크 삭제")
   public void bulk_delete() {
     // 쿼리 확인
     long count = queryFactory
             .delete(member)
             .where(member.age.gt(18))
             .execute();
+  }
+
+  @Test
+  @DisplayName("sql 함수 사용")
+  public void sql_function() {
+
+    List<String> result = queryFactory
+//            .select(Expressions.stringTemplate(
+//                    "function('replace', {0}, {1}, {2})",
+//                    member.username, "M"))
+            .select(Expressions.stringTemplate(
+                    "function('upper', {0})",  // function 정의, 등록된 것만 Dialect, DB
+                    member.username))           // index 파람 순서
+            .from(member)
+            .fetch();
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("sql 함수 소문자")
+  public void sql_function2() {
+    List<String> result = queryFactory
+            .select(member.username)
+            .from(member)
+            .where(member.username.eq(
+                    Expressions.stringTemplate(
+                            "function('lower', {0})",
+                            member.username)
+                    )
+            )
+            .fetch();
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("sql 함수 - 내장함수 (안시표준)")
+  public void sql_function3() {
+    List<String> result = queryFactory
+            .select(member.username)
+            .from(member)
+            .where(member.username.eq(member.username.lower()))
+//            .where(member.username.eq(member.username.upper()))
+            .fetch();
+    result.forEach(o -> System.out.println("o = " + o));
   }
 
   private List<Member> searchMember2(String usernameParam, Integer ageParam) {
