@@ -82,7 +82,7 @@ class MemberJpaRepositoryTest {
   }
 
   @Test
-  @DisplayName("조건거색1")
+  @DisplayName("조건거색1 - builder")
   public void search_builder() {
     MemberSearchCondition condition = new MemberSearchCondition();
     condition.setAgeGoe(35);
@@ -94,7 +94,7 @@ class MemberJpaRepositoryTest {
     result.forEach(o -> System.out.println("o = " + o));
   }
   @Test
-  @DisplayName("조건검색2")
+  @DisplayName("조건검색2 - builder")
   public void search_builder2() {
     MemberSearchCondition condition = new MemberSearchCondition();
     condition.setTeamName("teamB");
@@ -104,12 +104,38 @@ class MemberJpaRepositoryTest {
     result.forEach(o -> System.out.println("o = " + o));
   }
   @Test
-  @DisplayName("조건 없는 경우")
+  @DisplayName("조건 없는 경우 - builder")
   public void search_builder3() {
     MemberSearchCondition condition = new MemberSearchCondition();
 
     // where 적용 x -> 문제없이 실행,but 조인된 모든데이터를 들고오므로, 주의 필요
     List<MemberTeamDto> result = memberJpaRepository.searchByBuilder(condition);
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("조건검색 - where 파라미터")
+  public void search_where_param() {
+    MemberSearchCondition condition = new MemberSearchCondition();
+    condition.setAgeGoe(35);
+    condition.setAgeLoe(40);
+    condition.setTeamName("teamB");
+
+    List<MemberTeamDto> result = memberJpaRepository.search(condition);
+    assertThat(result).extracting("username").containsExactly("member4");
+    result.forEach(o -> System.out.println("o = " + o));
+  }
+
+  @Test
+  @DisplayName("조건검색 - where 파라미터, 엔티티 조회")
+  public void search_where_param2() {
+    MemberSearchCondition condition = new MemberSearchCondition();
+    condition.setAgeGoe(35);
+    condition.setAgeLoe(40);
+    condition.setTeamName("teamB");
+
+    List<Member> result = memberJpaRepository.searchMember(condition);
+    assertThat(result).extracting("username").containsExactly("member4");
     result.forEach(o -> System.out.println("o = " + o));
   }
 
