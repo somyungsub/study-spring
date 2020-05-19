@@ -23,6 +23,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -680,6 +681,69 @@ public class QuerydslBasicTest {
 
     List<Member> result = searchMember2(usernameParam, ageParam);
     assertThat(result.size()).isEqualTo(1);
+  }
+
+  @Test
+  @DisplayName("수정 삭제 배치")
+  @Commit
+  public void bulk_update() {
+    // member1 = 10 -> DB member1
+    // member2 = 20 -> DB member2
+    // member3 = 30 -> DB member3
+    // member4 = 40 -> DB member4
+
+    // DB 반영, but 영속성컨텍스트는 1차캐시로 존재
+    long count = queryFactory
+            .update(member)
+            .set(member.username, "비회원")
+            .where(member.age.lt(28))
+            .execute();
+
+
+    // member1 = 10 -> DB 비회원
+    // member2 = 20 -> DB 비회원
+    // member3 = 30 -> DB member3
+    // member4 = 40 -> DB member4
+    /*
+      주의!!
+        영속성컨텍스트 -> member1~4가 존재 -> DB에서 가져온 변경된 데이터 들고와도.. 컨텍스트에 존재하면, DB 데이터를 버리고 1차캐시를 사용
+      해결
+        영속성컨텍스트 초기화 -> em.flush(); em.clear();
+        컨텍스트를 비우고 DB 조회해야.. DB에 반영된 데이터를 들고 옴!!
+     */
+
+    em.flush(); em.clear();
+
+    List<Member> list = queryFactory
+            .selectFrom(member)
+            .fetch();
+    list.forEach(o -> System.out.println("o = " + o));
+
+  }
+
+  @Test
+  @DisplayName("bulk_add")
+  public void bulk_add() {
+    // 쿼리 확인
+    long count = queryFactory
+            .update(member)
+            .set(member.age, member.age.add(1))
+//            .set(member.age, member.age.add(-1))
+//            .set(member.age, member.age.subtract(2))
+//            .set(member.age, member.age.multiply(2))
+//            .set(member.age, member.age.divide(2))
+            .execute();
+
+  }
+
+  @Test
+  @DisplayName("bulk_delete")
+  public void bulk_delete() {
+    // 쿼리 확인
+    long count = queryFactory
+            .delete(member)
+            .where(member.age.gt(18))
+            .execute();
   }
 
   private List<Member> searchMember2(String usernameParam, Integer ageParam) {
