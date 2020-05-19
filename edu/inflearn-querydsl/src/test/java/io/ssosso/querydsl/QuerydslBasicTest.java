@@ -10,6 +10,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ssosso.querydsl.dto.MemberDto;
+import io.ssosso.querydsl.dto.QMemberDto;
 import io.ssosso.querydsl.dto.UserDto;
 import io.ssosso.querydsl.entity.Member;
 import io.ssosso.querydsl.entity.QMember;
@@ -646,4 +647,17 @@ public class QuerydslBasicTest {
 
     result.forEach(o -> System.out.println("o = " + o));
   }
+
+  @Test
+  @DisplayName("query_projection")
+  public void query_projection() {
+    List<MemberDto> result = queryFactory
+            .select(new QMemberDto(member.username, member.age))
+            .from(member)
+            .fetch();
+
+    result.forEach(o -> System.out.println("o = " + o));
+
+  }
+
 }
