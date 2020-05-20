@@ -2,13 +2,16 @@ package io.ssosso.querydsl.repository;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.ssosso.querydsl.dto.MemberSearchCondition;
 import io.ssosso.querydsl.dto.MemberTeamDto;
 import io.ssosso.querydsl.dto.QMemberTeamDto;
+import io.ssosso.querydsl.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
 import java.util.List;
@@ -98,7 +101,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
             .limit(pageable.getPageSize())
             .fetch();
 
-    long count = queryFactory
+    JPAQuery<Member> countQuery = queryFactory
             .select(member)
             .from(member)
             .leftJoin(member.team, team)
@@ -107,10 +110,11 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                     teamNameEq(condition.getTeamName()),
                     ageGoe(condition.getAgeGoe()),
                     ageLoe(condition.getAgeLoe())
-            ).fetchCount();
+            );
 
 
-    return new PageImpl<>(content, pageable, count);
+//    return new PageImpl<>(content, pageable, count);
+    return PageableExecutionUtils.getPage(content, pageable, () -> countQuery.fetchCount());  // count 최적화 (lazy)
 
   }
 
