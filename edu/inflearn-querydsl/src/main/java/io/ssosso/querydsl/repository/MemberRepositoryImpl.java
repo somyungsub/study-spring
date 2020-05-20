@@ -11,6 +11,7 @@ import io.ssosso.querydsl.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.data.repository.support.PageableExecutionUtils;
 
 import javax.persistence.EntityManager;
@@ -20,7 +21,9 @@ import static io.ssosso.querydsl.entity.QMember.member;
 import static io.ssosso.querydsl.entity.QTeam.team;
 import static org.springframework.util.StringUtils.hasText;
 
-public class MemberRepositoryImpl implements MemberRepositoryCustom {
+public class MemberRepositoryImpl
+//        extends QuerydslRepositorySupport
+        implements MemberRepositoryCustom {
 
   private final JPAQueryFactory queryFactory;
 
@@ -28,8 +31,13 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     this.queryFactory = new JPAQueryFactory(em);
   }
 
+//  public MemberRepositoryImpl(Class<?> domainClass) {
+//    super(Member.class);
+//  }
+
   @Override
   public List<MemberTeamDto> search(MemberSearchCondition condition) {
+
     return queryFactory
             .select(new QMemberTeamDto(
                     member.id.as("memberId"),
