@@ -3,6 +3,7 @@ package io.ssosso.querydsl.repository;
 import io.ssosso.querydsl.dto.MemberSearchCondition;
 import io.ssosso.querydsl.dto.MemberTeamDto;
 import io.ssosso.querydsl.entity.Member;
+import io.ssosso.querydsl.entity.QMember;
 import io.ssosso.querydsl.entity.Team;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -102,6 +103,18 @@ class MemberRepositoryTest {
     assertThat(result.getSize()).isEqualTo(3);
     assertThat(result.getContent()).extracting("username").containsExactly("member1","member2","member3");
 
+
+  }
+
+  @Test
+  @DisplayName("querydsl_predicate_executor")
+  public void querydsl_predicate_executor() {
+    QMember member = QMember.member;
+    Iterable<Member> member1 = memberRepository.findAll(member.age.between(10, 40).and(member.username.eq("member1")));
+
+    for (Member m : member1) {
+      System.out.println("m = " + m);
+    }
 
   }
 
