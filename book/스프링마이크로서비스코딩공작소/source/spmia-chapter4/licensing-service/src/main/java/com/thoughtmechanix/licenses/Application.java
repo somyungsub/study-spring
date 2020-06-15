@@ -12,8 +12,8 @@ import java.util.Collections;
 import java.util.List;
 
 @SpringBootApplication
-//@EnableDiscoveryClient
-//@EnableFeignClients
+@EnableDiscoveryClient
+@EnableFeignClients
 public class Application {
 
   @LoadBalanced
