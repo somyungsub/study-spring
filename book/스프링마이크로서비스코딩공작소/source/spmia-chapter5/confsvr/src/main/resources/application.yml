@@ -17,13 +17,15 @@ spring:
     config:
       discovery:
         enabled: true
-      server:
-        encrypt.enabled: false
+#      server:
+#        encrypt.enabled: false
         git:
-          uri: https://github.com/klimtever/config-repo/
-          searchPaths: licensingservice,organizationservice
-          username: native-cloud-apps
-          password: 0ffended
+#          uri: https://github.com/klimtever/config-repo/
+#          searchPaths: licensingservice,organizationservice
+          uri: https://github.com/somyungsub/study-spring
+          searchPaths: book/스프링마이크로서비스코딩공작소/source/spmia-chapter5/confsvr/src/main/resources/config/licensingservice, book/스프링마이크로서비스코딩공작소/source/spmia-chapter5/confsvr/src/main/resources/config/organizationservice
+#          username: native-cloud-apps
+#          password: 0ffended
 
 
 ####
