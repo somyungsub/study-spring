@@ -14,4 +14,14 @@ logging:
     org.springframework.web: WARN
     com.thoughtmechanix: DEBUG
 
-        
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+
+server:
+  port: 8081
