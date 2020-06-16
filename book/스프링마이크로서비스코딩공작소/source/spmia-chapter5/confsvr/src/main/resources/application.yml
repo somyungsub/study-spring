@@ -17,7 +17,7 @@ spring:
     config:
       discovery:
         enabled: true
-#      server:
+      server:
 #        encrypt.enabled: false
         git:
 #          uri: https://github.com/klimtever/config-repo/
