@@ -10,7 +10,7 @@ zuul.routes.authenticationservice: /auth/**
 #ribbon.eureka.enabled: false
 zuul.sensitiveHeaders: Cookie,Set-Cookie
 zuul.debug.request: true
-hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000
-#hystrix.command.licensingservice.execution.isolation.thread.timeoutInMilliseconds: 2
+hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds: 5000    # 주울 -> 히스트릭스 타임아웃 설정
+#hystrix.command.licensingservice.execution.isolation.thread.timeoutInMilliseconds: 3000 # 라이센싱서비스만 타임아웃 3초 설정
 #licensingservice.ribbon.ReadTimeout: 4000
 signing.key: "345345fsdfsf5345"
