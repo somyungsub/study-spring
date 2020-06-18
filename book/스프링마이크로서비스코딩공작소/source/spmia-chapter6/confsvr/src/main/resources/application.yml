@@ -20,10 +20,12 @@ spring:
       server:
         encrypt.enabled: false
         git:
-          uri: https://github.com/klimtever/config-repo/
-          searchPaths: licensingservice,organizationservice,specialroutesservice,zuulservice
-          username: native-cloud-apps
-          password: 0ffended
+#          uri: https://github.com/klimtever/config-repo/
+#          searchPaths: licensingservice,organizationservice,specialroutesservice,zuulservice
+          uri: https://github.com/somyungsub/study-spring
+          searchPaths: book/스프링마이크로서비스코딩공작소/source/config-repo/licensingservice, book/스프링마이크로서비스코딩공작소/source/config-repo/organizationservice, book/스프링마이크로서비스코딩공작소/source/config-repo/specialroutesservice, book/스프링마이크로서비스코딩공작소/source/config-repo/zuulservice
+#          username: native-cloud-apps
+#          password: 0ffended
 
 #Setting logging levels
 logging:
