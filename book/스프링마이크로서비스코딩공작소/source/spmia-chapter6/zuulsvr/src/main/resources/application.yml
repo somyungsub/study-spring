@@ -27,3 +27,9 @@ zuul:
   prefix:  /api
   routes:
     organizationservice: /organization/**
+
+# 수동경로 매핑
+#zuul:
+#  ignored-services: 'organizationservice'
+#  routes:
+#    organizationservice: /organization/**
