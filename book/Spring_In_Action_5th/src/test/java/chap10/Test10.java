@@ -299,7 +299,24 @@ public class Test10 {
     mapMono.subscribe(new DebugSubscriber<>());
 
   }
+  
+  @Test
+  @DisplayName("all")
+  public void p_368() throws Exception{
+    Mono<Boolean> mono = fluxJust().all(s -> s.length() == 1);
+    mono.subscribe(new DebugSubscriber<>());
 
+    fluxJust().all(s -> s.contains("A"))
+        .subscribe(new DebugSubscriber<>());
+
+  }
+
+  @Test
+  @DisplayName("any")
+  public void p_369() throws Exception{
+    fluxJust().any(s -> s.equals("A"))
+        .subscribe(new DebugSubscriber<>());
+  }
 
 
 }
