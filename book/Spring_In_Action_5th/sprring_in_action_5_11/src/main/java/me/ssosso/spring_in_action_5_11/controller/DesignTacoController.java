@@ -13,8 +13,11 @@ import reactor.core.publisher.Mono;
 @CrossOrigin(origins = "*")
 public class DesignTacoController {
 
-  @Autowired
-  TacoRepository tacoRepository;
+  private TacoRepository tacoRepository;
+
+  public DesignTacoController(TacoRepository tacoRepository) {
+    this.tacoRepository = tacoRepository;
+  }
 
   @GetMapping("/recent")
   public Flux<Taco> recentTacos() {
