@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>Eagle Eye Authentication Service</name>
-  <description>Authentication Service</description>
+  <description>Authentication Service7</description>
 
   <parent>
     <groupId>org.springframework.boot</groupId>

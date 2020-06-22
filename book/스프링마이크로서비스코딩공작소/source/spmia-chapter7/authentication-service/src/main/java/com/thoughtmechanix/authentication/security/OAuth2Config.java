@@ -36,7 +36,7 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
+        clients.inMemory()  // 편의상 인메모리, JDBC도 가능
                 .withClient("eagleeye")
                 .secret(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode("thisissecret"))
                 .authorizedGrantTypes("refresh_token", "password", "client_credentials")
