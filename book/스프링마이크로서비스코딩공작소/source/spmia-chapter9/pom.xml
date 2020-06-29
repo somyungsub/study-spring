@@ -4,7 +4,7 @@
 
   <groupId>com.thoughtmechanix</groupId>
   <version>0.0.1-SNAPSHOT</version>
-  <artifactId>tmx-parent-pom</artifactId>
+  <artifactId>tmx-parent-pom9</artifactId>
   <packaging>pom</packaging>
 
 
@@ -22,7 +22,7 @@
     <module>organization-service</module>
     <module>eurekasvr</module>
     <module>zuulsvr</module>
-    <!-- <module>zipkinsvr</module> -->
+     <module>zipkinsvr</module>
   </modules>
   <build>
     <plugins>
