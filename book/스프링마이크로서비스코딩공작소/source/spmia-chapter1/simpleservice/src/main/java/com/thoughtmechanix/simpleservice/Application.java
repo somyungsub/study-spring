@@ -19,7 +19,7 @@ public class Application {
     @RequestMapping(value="/{firstName}/{lastName}",method = RequestMethod.GET)
     public String hello( @PathVariable("firstName") String firstName,
                          @PathVariable("lastName") String lastName) {
-
+        System.out.println("test!!!");
         return String.format("{\"message\":\"Hello %s %s\"}", firstName, lastName);
     }
 }
