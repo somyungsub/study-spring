@@ -1,11 +1,13 @@
 package me.ssosso.springsecurity;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
@@ -21,6 +23,9 @@ import java.io.IOException;
 @EnableWebSecurity  // 웹시큐리티 설정 클래스들 임포트 시키는 애노테이션이므로 필수로 선언해야함
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+  @Autowired
+  private UserDetailsService userDetailsService;
+
   // http 요청에 대한 시큐리티 설정
   @Override
   protected void configure(HttpSecurity http) throws Exception {
@@ -34,8 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // 인증 정책
     http
         .formLogin()
-        .loginPage("/loginPage")      // 로그인 페이지 경로
-        .defaultSuccessUrl("/")       // 로그인 성공시 기본 URL
+//        .loginPage("/loginPage")      // 로그인 페이지 경로
+//        .defaultSuccessUrl("/")       // 로그인 성공시 기본 URL
         .failureUrl("/login")         // 실패시 login 페이지 보이기
         .usernameParameter("userId")  // 요청 파라미터
         .passwordParameter("passwd")  // 요청 파라미터
@@ -77,6 +82,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         })
         .deleteCookies("remember-me") // 쿠키 삭제
     ;
+
+    http
+        .rememberMe() // 기본은 remember-me
+        .rememberMeParameter("remember")
+        .tokenValiditySeconds(3600) // 1시간으로 설정 (기본 14일)
+        .userDetailsService(userDetailsService)
+    ;
+
 
 
   }
