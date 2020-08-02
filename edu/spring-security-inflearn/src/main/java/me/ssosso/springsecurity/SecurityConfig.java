@@ -61,12 +61,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     http
         .logout()
         .logoutUrl("/logout") // 디폴트 post 방식, get은 에러 -> 설정 필요
-        .logoutSuccessUrl("/logiin")
+        .logoutSuccessUrl("/login")
         .addLogoutHandler(new LogoutHandler() {
           @Override
           public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {
             HttpSession session = httpServletRequest.getSession();
-            session.invalidate();
+            session.invalidate(); // 세션초기화
           }
         })
         .logoutSuccessHandler(new LogoutSuccessHandler() {
