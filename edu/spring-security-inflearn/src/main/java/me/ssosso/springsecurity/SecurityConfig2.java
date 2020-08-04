@@ -21,9 +21,17 @@ public class SecurityConfig2 extends WebSecurityConfigurerAdapter {
 
     // 인증 정책
     http
-        .formLogin()
+        .formLogin();
 
-        ;
+
+    // 동시세션 제어
+    http
+        .sessionManagement()
+        .maximumSessions(1)             // 최대 허용 가능 세션수
+        .maxSessionsPreventsLogin(false) // 동시로그인 차단(true), false : 기존세션만료(default)
+
+    ;
+
 
 
 
