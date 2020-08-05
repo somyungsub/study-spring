@@ -29,8 +29,17 @@ public class SecurityConfig2 extends WebSecurityConfigurerAdapter {
         .sessionManagement()
         .maximumSessions(1)             // 최대 허용 가능 세션수
         .maxSessionsPreventsLogin(false) // 동시로그인 차단(true), false : 기존세션만료(default)
+    ;
+
+    // 세션 고정 보호
+    http
+        .sessionManagement()
+        .sessionFixation()
+//        .none() // 공격에 취약함... 세션 ID 탈취 되면 ... 정보 공유되어 로그인됨
+        .changeSessionId() // 기본값 -> 새롭게 세션ID 발급됨
 
     ;
+
 
 
 
