@@ -1,9 +1,13 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:6432/jpashop1
-    username: ssosso
-    password: ssosso
-    driver-class-name: org.postgresql.Driver
+#    url: jdbc:postgresql://localhost:6432/jpashop1
+#    username: ssosso
+#    password: ssosso
+#    driver-class-name: org.postgresql.Driver
+    url: jdbc:mysql://localhost:3306/prgrms-web-bjs-6
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: create
