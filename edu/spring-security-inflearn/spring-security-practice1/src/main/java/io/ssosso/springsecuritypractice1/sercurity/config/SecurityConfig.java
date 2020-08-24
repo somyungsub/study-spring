@@ -1,9 +1,11 @@
 package io.ssosso.springsecuritypractice1.sercurity.config;
 
+import io.ssosso.springsecuritypractice1.sercurity.provider.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -31,9 +33,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   @Autowired
   private UserDetailsService userDetailsService;
 
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    // 평문 -> 암호화 처리
+    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+  }
+
+  @Bean
+  public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+    return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
+  }
+
   @Override
   protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    // 커스텀 userDetailsService 등록 -> 인증객체 만들기 (DB 비교 -> 인증? -> ok -> 인증객체(AccountContext) 만들어 반환)
+    // JWT토큰 인증 ? -> 토큰관련 인증객체를 사용
     auth.userDetailsService(userDetailsService);
+    // 커스텀 provider 등록 -> 검증처리하기
+    auth.authenticationProvider(authenticationProvider(userDetailsService, passwordEncoder()));
   }
 
   @Override
@@ -42,17 +59,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
   }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    // 평문 -> 암호화 처리
-    return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-  }
-
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
       .authorizeRequests()
-      .antMatchers("/","/users").permitAll()
+      .antMatchers("/","/users","user/login/**").permitAll()
       .antMatchers("/mypage").hasRole("USER")
       .antMatchers("/messages").hasRole("MANAGER")
       .antMatchers("/config").hasRole("ADMIN")
