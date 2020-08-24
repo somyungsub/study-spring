@@ -1,13 +1,13 @@
 package io.ssosso.springsecuritypractice1.sercurity.provider;
 
 import io.ssosso.springsecuritypractice1.sercurity.service.AccountContext;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -35,6 +35,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     if (!passwordEncoder.matches(password, accountContext.getAccount().getPassword())) {
       throw new BadCredentialsException("Authentication fail.");
     }
+
+    // 시크릿키 전달 여부 확인 검증
+//    FormWebAuthenticationDetails formWebAuthenticationDetails = (FormWebAuthenticationDetails) authentication.getDetails();
+//    String secretKey = formWebAuthenticationDetails.getSecretKey();
+//    if (secretKey == null || !"secret".equals(secretKey)) {
+//      throw new InsufficientAuthenticationException("InsufficientAuthenticationException");
+//    }
+
 
     // 인증된거면 -> 토큰 만듬 / 생성자 매개변수 확인 / 인증 된 객체를 만들어서 반환
     UsernamePasswordAuthenticationToken authenticationToken

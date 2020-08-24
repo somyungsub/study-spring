@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,6 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   // 커스텀 작성한 UserDetailsService -> CustomUser~ 주입
   @Autowired
   private UserDetailsService userDetailsService;
+
+  @Autowired
+  private AuthenticationDetailsSource authenticationDetailsSource;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -73,6 +77,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .formLogin()
       .loginPage("/login")
       .loginProcessingUrl("/login_proc")  // login.html -> login_proc (폼 액션 부분 일치시켜야함)
+      .authenticationDetailsSource(authenticationDetailsSource)
       .defaultSuccessUrl("/")             // 로그인 성공 후 이동
       .permitAll()
 
