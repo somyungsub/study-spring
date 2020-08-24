@@ -1,5 +1,6 @@
 package io.ssosso.springsecuritypractice1.sercurity.provider;
 
+import io.ssosso.springsecuritypractice1.sercurity.common.FormWebAuthenticationDetails;
 import io.ssosso.springsecuritypractice1.sercurity.service.AccountContext;
 
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -37,12 +38,11 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     }
 
     // 시크릿키 전달 여부 확인 검증
-//    FormWebAuthenticationDetails formWebAuthenticationDetails = (FormWebAuthenticationDetails) authentication.getDetails();
-//    String secretKey = formWebAuthenticationDetails.getSecretKey();
-//    if (secretKey == null || !"secret".equals(secretKey)) {
-//      throw new InsufficientAuthenticationException("InsufficientAuthenticationException");
-//    }
-
+    FormWebAuthenticationDetails formWebAuthenticationDetails = (FormWebAuthenticationDetails) authentication.getDetails();
+    String secretKey = formWebAuthenticationDetails.getSecretKey();
+    if (secretKey == null || !"secret".equals(secretKey)) {
+      throw new InsufficientAuthenticationException("InsufficientAuthenticationException");
+    }
 
     // 인증된거면 -> 토큰 만듬 / 생성자 매개변수 확인 / 인증 된 객체를 만들어서 반환
     UsernamePasswordAuthenticationToken authenticationToken
