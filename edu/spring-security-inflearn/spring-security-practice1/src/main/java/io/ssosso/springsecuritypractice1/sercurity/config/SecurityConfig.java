@@ -1,6 +1,5 @@
 package io.ssosso.springsecuritypractice1.sercurity.config;
 
-import io.ssosso.springsecuritypractice1.filter.AjaxLoginProcessingFilter;
 import io.ssosso.springsecuritypractice1.sercurity.common.FormWebAuthenticationDetailsSource;
 import io.ssosso.springsecuritypractice1.sercurity.handler.CustomAccessDeniedHandler;
 import io.ssosso.springsecuritypractice1.sercurity.provider.CustomAuthenticationProvider;
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,10 +21,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@Order(1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //  @Override
@@ -97,13 +97,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     .and()
       .exceptionHandling()
       .accessDeniedHandler(accessDeniedHandler())
-    .and()
-      // UsernamePasswordAuthenticationFilter 전에 ajaxLoginProcessingFilter를 위치시킨다
-      .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
-      .csrf().disable() // csrf 토큰 검사 비활성화
-
-
-
     ;
 
   }
@@ -118,13 +111,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
     accessDeniedHandler.setErrorPage("/denied");
     return accessDeniedHandler;
-  }
-
-  @Bean
-  public AjaxLoginProcessingFilter ajaxLoginProcessingFilter() throws Exception {
-    AjaxLoginProcessingFilter ajaxLoginProcessingFilter = new AjaxLoginProcessingFilter();
-    ajaxLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
-    return ajaxLoginProcessingFilter;
   }
 
 }
