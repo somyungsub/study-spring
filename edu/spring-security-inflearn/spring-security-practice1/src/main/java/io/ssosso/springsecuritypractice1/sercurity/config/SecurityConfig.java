@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -35,7 +36,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private UserDetailsService userDetailsService;
 
   @Autowired
-  private AuthenticationDetailsSource authenticationDetailsSource;
+  private AuthenticationDetailsSource formAuthenticationDetailsSource;
+
+  @Autowired
+  private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -77,8 +81,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .formLogin()
       .loginPage("/login")
       .loginProcessingUrl("/login_proc")  // login.html -> login_proc (폼 액션 부분 일치시켜야함)
-      .authenticationDetailsSource(authenticationDetailsSource)
+      .authenticationDetailsSource(formAuthenticationDetailsSource)
       .defaultSuccessUrl("/")             // 로그인 성공 후 이동
+      .successHandler(customAuthenticationSuccessHandler)
       .permitAll()
 
     ;
