@@ -12,12 +12,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class CustomAuthenticationProvider implements AuthenticationProvider {
+public class FormAuthenticationProvider implements AuthenticationProvider {
 
   private final UserDetailsService userDetailsService;
   private final PasswordEncoder passwordEncoder;
 
-  public CustomAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
+  public FormAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
     this.userDetailsService = userDetailsService;
     this.passwordEncoder = passwordEncoder;
   }

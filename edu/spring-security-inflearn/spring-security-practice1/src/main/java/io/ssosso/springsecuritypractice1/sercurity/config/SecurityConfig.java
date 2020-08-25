@@ -2,7 +2,7 @@ package io.ssosso.springsecuritypractice1.sercurity.config;
 
 import io.ssosso.springsecuritypractice1.sercurity.common.FormWebAuthenticationDetailsSource;
 import io.ssosso.springsecuritypractice1.sercurity.handler.CustomAccessDeniedHandler;
-import io.ssosso.springsecuritypractice1.sercurity.provider.CustomAuthenticationProvider;
+import io.ssosso.springsecuritypractice1.sercurity.provider.FormAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -58,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public AuthenticationProvider authenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
-    return new CustomAuthenticationProvider(userDetailsService, passwordEncoder);
+    return new FormAuthenticationProvider(userDetailsService, passwordEncoder);
   }
 
   @Override
