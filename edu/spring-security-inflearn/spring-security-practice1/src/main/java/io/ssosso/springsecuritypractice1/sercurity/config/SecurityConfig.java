@@ -1,11 +1,12 @@
 package io.ssosso.springsecuritypractice1.sercurity.config;
 
+import io.ssosso.springsecuritypractice1.sercurity.common.FormWebAuthenticationDetailsSource;
+import io.ssosso.springsecuritypractice1.sercurity.handler.CustomAccessDeniedHandler;
 import io.ssosso.springsecuritypractice1.sercurity.provider.CustomAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationDetailsSource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -37,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private UserDetailsService userDetailsService;
 
   @Autowired
-  private AuthenticationDetailsSource formAuthenticationDetailsSource;
+  private FormWebAuthenticationDetailsSource formWebAuthenticationDetailsSource;
 
   @Autowired
   private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
@@ -75,23 +77,33 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
       .authorizeRequests()
-      .antMatchers("/","/users","user/login/**", "/login*").permitAll()
+      .antMatchers("/", "/users", "user/login/**", "/login*").permitAll()
       .antMatchers("/mypage").hasRole("USER")
       .antMatchers("/messages").hasRole("MANAGER")
       .antMatchers("/config").hasRole("ADMIN")
-      .anyRequest().authenticated();
-
-    http
+      .anyRequest().authenticated()
+    .and()
       .formLogin()
       .loginPage("/login")
       .loginProcessingUrl("/login_proc")  // login.html -> login_proc (폼 액션 부분 일치시켜야함)
-      .authenticationDetailsSource(formAuthenticationDetailsSource)
       .defaultSuccessUrl("/")             // 로그인 성공 후 이동
+      .authenticationDetailsSource(formWebAuthenticationDetailsSource)
       .successHandler(customAuthenticationSuccessHandler)
       .failureHandler(customAuthenticationFailureHandler)
       .permitAll()
+    .and()
+      .exceptionHandling()
+      .accessDeniedHandler(accessDeniedHandler())
 
     ;
 
   }
+
+  @Bean
+  public AccessDeniedHandler accessDeniedHandler() {
+    CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
+    accessDeniedHandler.setErrorPage("/denied");
+    return accessDeniedHandler;
+  }
+
 }

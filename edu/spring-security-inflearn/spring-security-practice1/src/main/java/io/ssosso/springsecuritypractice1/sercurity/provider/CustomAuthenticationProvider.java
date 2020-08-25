@@ -1,6 +1,5 @@
 package io.ssosso.springsecuritypractice1.sercurity.provider;
 
-import io.ssosso.springsecuritypractice1.sercurity.common.FormAuthenticationDetailsSource;
 import io.ssosso.springsecuritypractice1.sercurity.common.*;
 import io.ssosso.springsecuritypractice1.sercurity.service.AccountContext;
 
