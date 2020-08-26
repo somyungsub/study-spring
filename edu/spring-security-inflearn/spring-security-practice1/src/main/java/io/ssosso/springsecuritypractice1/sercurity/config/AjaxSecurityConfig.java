@@ -49,6 +49,7 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
       .antMatcher("/api/**")
       .authorizeRequests()
       .antMatchers("/api/messages").hasRole("MANAGER")
+      .antMatchers("/api/login").permitAll()
       .anyRequest().authenticated()
     .and()
       // UsernamePasswordAuthenticationFilter 전에 ajaxLoginProcessingFilter를 위치시킨다
@@ -61,8 +62,10 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
     ;
 
     http
-      .csrf().disable(); // csrf 토큰 검사 비활성화
+      .csrf()
+//      .disable() // csrf 토큰 검사 비활성화
 
+    ;
   }
 
   @Bean
