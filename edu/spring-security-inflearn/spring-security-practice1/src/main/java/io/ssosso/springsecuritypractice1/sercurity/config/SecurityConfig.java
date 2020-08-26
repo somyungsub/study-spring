@@ -1,7 +1,7 @@
 package io.ssosso.springsecuritypractice1.sercurity.config;
 
 import io.ssosso.springsecuritypractice1.sercurity.common.FormWebAuthenticationDetailsSource;
-import io.ssosso.springsecuritypractice1.sercurity.handler.CustomAccessDeniedHandler;
+import io.ssosso.springsecuritypractice1.sercurity.handler.FormAccessDeniedHandler;
 import io.ssosso.springsecuritypractice1.sercurity.provider.FormAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -45,10 +45,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private FormWebAuthenticationDetailsSource formWebAuthenticationDetailsSource;
 
   @Autowired
-  private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+  private AuthenticationSuccessHandler formAuthenticationSuccessHandler;
 
   @Autowired
-  private AuthenticationFailureHandler customAuthenticationFailureHandler;
+  private AuthenticationFailureHandler formAuthenticationFailureHandler;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -91,8 +91,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
       .loginProcessingUrl("/login_proc")  // login.html -> login_proc (폼 액션 부분 일치시켜야함)
       .defaultSuccessUrl("/")             // 로그인 성공 후 이동
       .authenticationDetailsSource(formWebAuthenticationDetailsSource)
-      .successHandler(customAuthenticationSuccessHandler)
-      .failureHandler(customAuthenticationFailureHandler)
+      .successHandler(formAuthenticationSuccessHandler)
+      .failureHandler(formAuthenticationFailureHandler)
       .permitAll()
     .and()
       .exceptionHandling()
@@ -108,7 +108,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public AccessDeniedHandler accessDeniedHandler() {
-    CustomAccessDeniedHandler accessDeniedHandler = new CustomAccessDeniedHandler();
+    FormAccessDeniedHandler accessDeniedHandler = new FormAccessDeniedHandler();
     accessDeniedHandler.setErrorPage("/denied");
     return accessDeniedHandler;
   }

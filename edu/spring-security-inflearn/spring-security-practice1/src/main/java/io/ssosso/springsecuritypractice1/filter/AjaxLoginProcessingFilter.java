@@ -28,7 +28,7 @@ public class AjaxLoginProcessingFilter extends AbstractAuthenticationProcessingF
   public Authentication attemptAuthentication(HttpServletRequest httpServletRequest,
                                               HttpServletResponse httpServletResponse) throws AuthenticationException, IOException, ServletException {
 
-    if (isAjax(httpServletRequest)) {
+    if (!isAjax(httpServletRequest)) {
       throw new IllegalStateException("Authentication is not supported");
     }
 
