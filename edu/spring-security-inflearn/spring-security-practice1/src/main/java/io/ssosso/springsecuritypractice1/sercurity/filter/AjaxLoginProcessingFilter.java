@@ -1,4 +1,4 @@
-package io.ssosso.springsecuritypractice1.filter;
+package io.ssosso.springsecuritypractice1.sercurity.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ssosso.springsecuritypractice1.domain.AccountDto;

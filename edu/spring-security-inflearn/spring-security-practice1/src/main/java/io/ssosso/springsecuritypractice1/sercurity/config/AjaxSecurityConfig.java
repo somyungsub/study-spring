@@ -1,6 +1,8 @@
 package io.ssosso.springsecuritypractice1.sercurity.config;
 
-import io.ssosso.springsecuritypractice1.filter.AjaxLoginProcessingFilter;
+import io.ssosso.springsecuritypractice1.sercurity.common.AjaxLoginAuthenticationEntryPoint;
+import io.ssosso.springsecuritypractice1.sercurity.filter.*;
+import io.ssosso.springsecuritypractice1.sercurity.handler.AjaxAccessDeniedHandler;
 import io.ssosso.springsecuritypractice1.sercurity.handler.AjaxAuthenticationFailureHandler;
 import io.ssosso.springsecuritypractice1.sercurity.handler.AjaxAuthenticationSuccessHandler;
 import io.ssosso.springsecuritypractice1.sercurity.provider.AjaxAuthenticationProvider;
@@ -15,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -44,12 +48,31 @@ public class AjaxSecurityConfig extends WebSecurityConfigurerAdapter {
     http
       .antMatcher("/api/**")
       .authorizeRequests()
+      .antMatchers("/api/messages").hasRole("MANAGER")
       .anyRequest().authenticated()
     .and()
       // UsernamePasswordAuthenticationFilter 전에 ajaxLoginProcessingFilter를 위치시킨다
-      .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
-      .csrf().disable() // csrf 토큰 검사 비활성화
+      .addFilterBefore(ajaxLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
+
+    http
+      .exceptionHandling()
+      .authenticationEntryPoint(ajaxLoginAuthenticationEntryPoint())
+      .accessDeniedHandler(ajaxAccessDeniedHandler())
     ;
+
+    http
+      .csrf().disable(); // csrf 토큰 검사 비활성화
+
+  }
+
+  @Bean
+  public AccessDeniedHandler ajaxAccessDeniedHandler() {
+    return new AjaxAccessDeniedHandler();
+  }
+
+  @Bean
+  public AuthenticationEntryPoint ajaxLoginAuthenticationEntryPoint() {
+    return new AjaxLoginAuthenticationEntryPoint();
   }
 
   @Bean

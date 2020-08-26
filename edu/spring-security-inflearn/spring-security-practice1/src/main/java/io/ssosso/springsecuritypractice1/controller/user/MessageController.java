@@ -2,6 +2,7 @@ package io.ssosso.springsecuritypractice1.controller.user;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class MessageController {
@@ -10,5 +11,12 @@ public class MessageController {
   public String message() {
 
     return "user/messages";
+  }
+
+  @GetMapping("/api/messages")
+  @ResponseBody
+  public String apiMessage(){
+
+    return "message ok";
   }
 }
