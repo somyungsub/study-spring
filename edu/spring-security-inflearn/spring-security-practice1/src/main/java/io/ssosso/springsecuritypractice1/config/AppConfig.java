@@ -1,6 +1,6 @@
 package io.ssosso.springsecuritypractice1.config;
 
-import io.ssosso.springsecuritypractice1.repository.ResourceRepository;
+import io.ssosso.springsecuritypractice1.repository.ResourcesRepository;
 import io.ssosso.springsecuritypractice1.sercurity.service.SecurityResourceService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 public class AppConfig {
 
   @Bean
-  public SecurityResourceService securityResourceService(ResourceRepository resourceRepository) {
-    return new SecurityResourceService(resourceRepository);
+  public SecurityResourceService securityResourceService(ResourcesRepository resourcesRepository) {
+    return new SecurityResourceService(resourcesRepository);
   }
 
 }

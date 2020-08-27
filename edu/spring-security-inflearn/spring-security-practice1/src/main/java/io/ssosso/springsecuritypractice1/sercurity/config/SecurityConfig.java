@@ -3,6 +3,7 @@ package io.ssosso.springsecuritypractice1.sercurity.config;
 import io.ssosso.springsecuritypractice1.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.ssosso.springsecuritypractice1.sercurity.common.FormWebAuthenticationDetailsSource;
 import io.ssosso.springsecuritypractice1.sercurity.factory.UrlResourcesMapFactoryBean;
+import io.ssosso.springsecuritypractice1.sercurity.filter.PermitAllFilter;
 import io.ssosso.springsecuritypractice1.sercurity.handler.FormAccessDeniedHandler;
 import io.ssosso.springsecuritypractice1.sercurity.provider.FormAuthenticationProvider;
 import io.ssosso.springsecuritypractice1.sercurity.service.SecurityResourceService;
@@ -64,6 +65,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private SecurityResourceService securityResourceService;
+
+  private String[] permitAllResource = {"/", "/login", "/user/login/**"};
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -138,16 +141,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   }
 
   @Bean
-  public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
-    FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+  public PermitAllFilter customFilterSecurityInterceptor() throws Exception {
+    PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResource);
 
     // 3가지 속성 저장 필요
-    filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
-    filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased()); // 결정 관리자
-    filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean()); // 인증관리자
+    permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+    permitAllFilter.setAccessDecisionManager(affirmativeBased()); // 결정 관리자
+    permitAllFilter.setAuthenticationManager(authenticationManagerBean()); // 인증관리자
 
-    return filterSecurityInterceptor;
+    return permitAllFilter;
   }
+
+//  @Bean
+//  public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
+//    FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+//
+//    // 3가지 속성 저장 필요
+//    filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+//    filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased()); // 결정 관리자
+//    filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean()); // 인증관리자
+//
+//    return filterSecurityInterceptor;
+//  }
 
   private AccessDecisionManager affirmativeBased() {
     AffirmativeBased affirmativeBased = new AffirmativeBased(getAccessDecisionVoters());
@@ -160,7 +175,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Bean
   public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
-    return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
+    return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject(), securityResourceService);
   }
 
   private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {

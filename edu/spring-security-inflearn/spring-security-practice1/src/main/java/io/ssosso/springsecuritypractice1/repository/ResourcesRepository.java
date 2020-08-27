@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface ResourceRepository extends JpaRepository<Resources, Long> {
+public interface ResourcesRepository extends JpaRepository<Resources, Long> {
 
   Resources findByResourceNameAndHttpMethod(String resourceName, String httpMethod);
 
