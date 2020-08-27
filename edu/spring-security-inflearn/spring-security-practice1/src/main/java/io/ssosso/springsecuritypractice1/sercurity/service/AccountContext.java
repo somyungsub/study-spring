@@ -1,6 +1,6 @@
 package io.ssosso.springsecuritypractice1.sercurity.service;
 
-import io.ssosso.springsecuritypractice1.domain.Account;
+import io.ssosso.springsecuritypractice1.domain.entity.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 

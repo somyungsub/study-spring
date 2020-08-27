@@ -1,7 +1,7 @@
 package io.ssosso.springsecuritypractice1.sercurity.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.ssosso.springsecuritypractice1.domain.Account;
+import io.ssosso.springsecuritypractice1.domain.entity.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

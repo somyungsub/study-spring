@@ -1,13 +1,19 @@
 package io.ssosso.springsecuritypractice1.sercurity.config;
 
+import io.ssosso.springsecuritypractice1.metadatasource.UrlFilterInvocationSecurityMetadataSource;
 import io.ssosso.springsecuritypractice1.sercurity.common.FormWebAuthenticationDetailsSource;
+import io.ssosso.springsecuritypractice1.sercurity.factory.UrlResourcesMapFactoryBean;
 import io.ssosso.springsecuritypractice1.sercurity.handler.FormAccessDeniedHandler;
 import io.ssosso.springsecuritypractice1.sercurity.provider.FormAuthenticationProvider;
+import io.ssosso.springsecuritypractice1.sercurity.service.SecurityResourceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -19,12 +25,18 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
-@Order(1)
+//@Order(1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 //  @Override
@@ -49,6 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private AuthenticationFailureHandler formAuthenticationFailureHandler;
+
+  @Autowired
+  private SecurityResourceService securityResourceService;
 
   @Bean
   public PasswordEncoder passwordEncoder() {
@@ -80,10 +95,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
       .authorizeRequests()
-      .antMatchers("/", "/users", "user/login/**", "/login*").permitAll()
+//      .antMatchers("/", "/users", "user/login/**", "/login*").permitAll()
       .antMatchers("/mypage").hasRole("USER")
       .antMatchers("/messages").hasRole("MANAGER")
       .antMatchers("/config").hasRole("ADMIN")
+      .antMatchers("/**").permitAll()
       .anyRequest().authenticated()
     .and()
       .formLogin()
@@ -97,7 +113,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     .and()
       .exceptionHandling()
       .accessDeniedHandler(accessDeniedHandler())
+      .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+    .and()
+      .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)  // 기존것보다 먼저 실행되게
+
     ;
+
+    http.csrf().disable();
+
+//    customConfigurer(http);
 
   }
 
@@ -112,5 +136,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     accessDeniedHandler.setErrorPage("/denied");
     return accessDeniedHandler;
   }
+
+  @Bean
+  public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
+    FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+
+    // 3가지 속성 저장 필요
+    filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+    filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased()); // 결정 관리자
+    filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean()); // 인증관리자
+
+    return filterSecurityInterceptor;
+  }
+
+  private AccessDecisionManager affirmativeBased() {
+    AffirmativeBased affirmativeBased = new AffirmativeBased(getAccessDecisionVoters());
+    return affirmativeBased;
+  }
+
+  private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
+    return Arrays.asList(new RoleVoter());
+  }
+
+  @Bean
+  public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
+    return new UrlFilterInvocationSecurityMetadataSource(urlResourcesMapFactoryBean().getObject());
+  }
+
+  private UrlResourcesMapFactoryBean urlResourcesMapFactoryBean() {
+    UrlResourcesMapFactoryBean urlResourcesMapFactoryBean = new UrlResourcesMapFactoryBean();
+    urlResourcesMapFactoryBean.setSecurityResourceService(securityResourceService);
+    return urlResourcesMapFactoryBean;
+  }
+
 
 }

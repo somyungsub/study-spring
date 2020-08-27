@@ -1,7 +1,7 @@
 package io.ssosso.springsecuritypractice1.sercurity.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.ssosso.springsecuritypractice1.domain.AccountDto;
+import io.ssosso.springsecuritypractice1.domain.dto.AccountDto;
 import io.ssosso.springsecuritypractice1.sercurity.token.AjaxAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

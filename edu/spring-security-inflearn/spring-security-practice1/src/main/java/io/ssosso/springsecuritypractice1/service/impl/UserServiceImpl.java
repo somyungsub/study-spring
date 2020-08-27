@@ -1,6 +1,6 @@
 package io.ssosso.springsecuritypractice1.service.impl;
 
-import io.ssosso.springsecuritypractice1.domain.Account;
+import io.ssosso.springsecuritypractice1.domain.entity.Account;
 import io.ssosso.springsecuritypractice1.repository.UserRepository;
 import io.ssosso.springsecuritypractice1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
