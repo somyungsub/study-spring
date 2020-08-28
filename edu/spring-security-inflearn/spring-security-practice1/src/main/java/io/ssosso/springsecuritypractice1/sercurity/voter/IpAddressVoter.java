@@ -13,10 +13,9 @@ import java.util.List;
 
 public class IpAddressVoter implements AccessDecisionVoter<Object> {
 
-    private SecurityResourceService securityResourceService;
+    private final SecurityResourceService securityResourceService;
 
     public IpAddressVoter(SecurityResourceService securityResourceService) {
-
         this.securityResourceService = securityResourceService;
     }
 
@@ -42,7 +41,7 @@ public class IpAddressVoter implements AccessDecisionVoter<Object> {
 
         for(String ipAddress : accessIpList){
             if(remoteAddress.equals(ipAddress)){
-                return ACCESS_ABSTAIN;
+                return ACCESS_ABSTAIN;  // affiermBased
             }
         }
 

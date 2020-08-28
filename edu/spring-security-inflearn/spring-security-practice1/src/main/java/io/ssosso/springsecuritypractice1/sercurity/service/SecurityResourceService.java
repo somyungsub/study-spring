@@ -1,7 +1,9 @@
 package io.ssosso.springsecuritypractice1.sercurity.service;
 
 import io.ssosso.springsecuritypractice1.domain.entity.Resources;
+import io.ssosso.springsecuritypractice1.repository.AccessIpRepository;
 import io.ssosso.springsecuritypractice1.repository.ResourcesRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -10,10 +12,16 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.*;
 
 public class SecurityResourceService {
 
   private ResourcesRepository resourcesRepository;
+
+  @Autowired
+  private AccessIpRepository accessIpRepository;
 
   public SecurityResourceService(ResourcesRepository resourcesRepository) {
     this.resourcesRepository = resourcesRepository;
@@ -36,6 +44,9 @@ public class SecurityResourceService {
   }
 
   public List<String> getAccessIpList() {
-    return null;
+
+    return accessIpRepository.findAll().stream()
+      .map(accessIp -> accessIp.getIpAddress())
+      .collect(toList());
   }
 }

@@ -7,7 +7,7 @@ import io.ssosso.springsecuritypractice1.sercurity.filter.PermitAllFilter;
 import io.ssosso.springsecuritypractice1.sercurity.handler.FormAccessDeniedHandler;
 import io.ssosso.springsecuritypractice1.sercurity.provider.FormAuthenticationProvider;
 import io.ssosso.springsecuritypractice1.sercurity.service.SecurityResourceService;
-import io.ssosso.springsecuritypractice1.service.impl.RoleHierarchyServiceImpl;
+import io.ssosso.springsecuritypractice1.sercurity.voter.IpAddressVoter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -174,7 +174,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
 
     List<AccessDecisionVoter<? extends Object>> accessDecisionVoters = new ArrayList<>();
-    accessDecisionVoters.add(roleVoter());
+
+    // 순서대로 진행되므로 순서 중요 - 3가지유형 (AffirmativeBased, ConsensusBased, UnanimousBased)
+    accessDecisionVoters.add(new IpAddressVoter(securityResourceService));  // 심의1
+    accessDecisionVoters.add(roleVoter());                                  // 심의2
 
     return accessDecisionVoters;
   }
