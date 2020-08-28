@@ -34,4 +34,8 @@ public class SecurityResourceService {
 
     return result;
   }
+
+  public List<String> getAccessIpList() {
+    return null;
+  }
 }
