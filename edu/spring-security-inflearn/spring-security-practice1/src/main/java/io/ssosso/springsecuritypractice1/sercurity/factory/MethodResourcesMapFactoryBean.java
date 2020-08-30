@@ -7,10 +7,15 @@ import org.springframework.security.access.ConfigAttribute;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-public class MethodResourcesFactoryBean implements FactoryBean<LinkedHashMap<String, List<ConfigAttribute>>> {
+public class MethodResourcesMapFactoryBean implements FactoryBean<LinkedHashMap<String, List<ConfigAttribute>>> {
 
   private SecurityResourceService securityResourceService;
+  private String resourceType;
   private LinkedHashMap<String, List<ConfigAttribute>> resourceMap;
+
+  public void setResourceType(String resourceType) {
+    this.resourceType = resourceType;
+  }
 
   public void setSecurityResourceService(SecurityResourceService securityResourceService) {
     this.securityResourceService = securityResourceService;
@@ -19,14 +24,12 @@ public class MethodResourcesFactoryBean implements FactoryBean<LinkedHashMap<Str
   @Override
   public LinkedHashMap<String, List<ConfigAttribute>> getObject() {
 
-    if (resourceMap == null) {
-      init();
+    if ("method".equals(resourceType)) {
+      resourceMap = securityResourceService.getMethodResourceList();
+    } else if ("pointcut".equals(resourceType)) {
+      resourceMap = securityResourceService.getPointcutResourceList();
     }
     return resourceMap;
-  }
-
-  private void init() {
-    resourceMap = securityResourceService.getMethodResourceList();
   }
 
   @Override
@@ -37,4 +40,5 @@ public class MethodResourcesFactoryBean implements FactoryBean<LinkedHashMap<Str
   @Override
   public boolean isSingleton() {
     return false;
-  }}
+  }
+}
