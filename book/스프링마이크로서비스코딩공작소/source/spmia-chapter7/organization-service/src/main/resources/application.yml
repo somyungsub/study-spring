@@ -2,7 +2,8 @@
 security:
   oauth2:
     resource:
-       userInfoUri: http://localhost:8901/auth/user
+       userInfoUri: http://localhost:8901/auth/user   # 콜백 URL
+       token-type: Bearer
 
 #Setting the logging levels for the service
 logging:
