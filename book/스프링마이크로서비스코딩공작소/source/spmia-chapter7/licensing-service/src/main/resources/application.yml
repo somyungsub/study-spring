@@ -1,9 +1,9 @@
 
-security:
-  oauth2:
-   resource:
-      userInfoUri: http://localhost:8901/auth/user
-      token-type: Bearer
+#security:
+#  oauth2:
+#   resource:
+#      userInfoUri: http://localhost:8901/auth/user
+#      token-type: Bearer
 
 eureka:
   instance:

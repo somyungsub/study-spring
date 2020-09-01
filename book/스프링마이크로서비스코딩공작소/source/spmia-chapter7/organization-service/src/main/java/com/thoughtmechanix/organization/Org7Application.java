@@ -19,7 +19,7 @@ import javax.servlet.Filter;
 
  */
 @EnableResourceServer
-public class Application {
+public class Org7Application {
     @Bean
     public Filter userContextFilter() {
         UserContextFilter userContextFilter = new UserContextFilter();
@@ -27,6 +27,6 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(Org7Application.class, args);
     }
 }

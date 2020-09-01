@@ -97,13 +97,19 @@
       <version>42.2.4</version>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-jwt</artifactId>
+      <version>1.0.9.RELEASE</version>
+    </dependency>
+
   </dependencies>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.8</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <start-class>com.thoughtmechanix.licenses.Application</start-class>
+    <start-class>com.thoughtmechanix.licenses.License7Application</start-class>
     <docker.image.name>johncarnell/tmx-licensing-service</docker.image.name>
     <docker.image.tag>chapter7</docker.image.tag>
   </properties>

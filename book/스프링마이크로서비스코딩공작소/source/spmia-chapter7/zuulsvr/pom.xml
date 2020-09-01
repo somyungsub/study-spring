@@ -52,6 +52,7 @@
       <version>4.5.2</version>
     </dependency>
 
+    <!-- JWT 파싱용 -> 값 추출하기 위해   -->
     <dependency>
         <groupId>io.jsonwebtoken</groupId>
         <artifactId>jjwt</artifactId>

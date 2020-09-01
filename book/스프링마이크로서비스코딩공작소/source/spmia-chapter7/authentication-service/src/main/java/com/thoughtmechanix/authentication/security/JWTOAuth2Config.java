@@ -13,43 +13,48 @@ import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenCo
 
 import java.util.Arrays;
 
-
-//@Configuration
+/*
+  JWT -> OAuth 사용
+ */
+@Configuration
 public class JWTOAuth2Config extends AuthorizationServerConfigurerAdapter {
 
-//  @Autowired
-//  private AuthenticationManager authenticationManager;
-//
-//  @Autowired
-//  private UserDetailsService userDetailsService;
-//
-//  @Autowired
-//  private TokenStore tokenStore;
-//
-//  @Autowired
-//  private DefaultTokenServices tokenServices;
-//
-//  @Autowired
-//  private JwtAccessTokenConverter jwtAccessTokenConverter;
-//
-//  @Autowired
-//  private JWTTokenEnhancer jwtTokenEnhancer;
+  @Autowired
+  private AuthenticationManager authenticationManager;
 
-//  @Override
-//  public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-//
-//    TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-//    tokenEnhancerChain.setTokenEnhancers(
-//        Arrays.asList(
-//            jwtTokenEnhancer,
-//            jwtAccessTokenConverter
-//        )
-//    );
-//
-//    endpoints
-//        .tokenStore(tokenStore)
-//        .accessTokenConverter(jwtAccessTokenConverter)
-//        .authenticationManager(authenticationManager)
-//        .userDetailsService(userDetailsService);
-//  }
+  @Autowired
+  private UserDetailsService userDetailsService;
+
+  @Autowired
+  private TokenStore tokenStore;
+
+  @Autowired
+  private DefaultTokenServices tokenServices;
+
+  @Autowired
+  private JwtAccessTokenConverter jwtAccessTokenConverter;
+
+  @Autowired
+  private JWTTokenEnhancer jwtTokenEnhancer;
+
+  @Override
+  public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+
+
+    TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+
+    // bean 연결 (JWT 확장)
+    tokenEnhancerChain.setTokenEnhancers(
+        Arrays.asList(
+            jwtTokenEnhancer,
+            jwtAccessTokenConverter
+        )
+    );
+
+    endpoints
+        .tokenStore(tokenStore)
+        .accessTokenConverter(jwtAccessTokenConverter)
+        .authenticationManager(authenticationManager)
+        .userDetailsService(userDetailsService);
+  }
 }

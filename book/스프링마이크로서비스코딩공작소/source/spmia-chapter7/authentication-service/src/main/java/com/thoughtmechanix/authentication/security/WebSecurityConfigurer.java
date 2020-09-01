@@ -11,27 +11,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class WebSecurityConfigurer extends WebSecurityConfigurerAdapter {
-    @Override
-    @Bean
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+  @Override
+  @Bean
+  public AuthenticationManager authenticationManagerBean() throws Exception {
+    return super.authenticationManagerBean();
+  }
 
-   @Override
-    @Bean
-    public UserDetailsService userDetailsServiceBean() throws Exception {
-        return super.userDetailsServiceBean();
-    }
+  @Override
+  @Bean
+  public UserDetailsService userDetailsServiceBean() throws Exception {
+    return super.userDetailsServiceBean();
+  }
 
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
-        auth
-                .inMemoryAuthentication()
-                .passwordEncoder(encoder)
-                .withUser("john.carnell").password(encoder.encode("password1")).roles("USER")
-                .and()
-                .withUser("william.woodward").password(encoder.encode("password2")).roles("USER", "ADMIN");
-    }
+  @Override
+  protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    auth
+      .inMemoryAuthentication()
+      .passwordEncoder(encoder)
+      .withUser("john.carnell").password(encoder.encode("password1")).roles("USER")
+      .and()
+      .withUser("william.woodward").password(encoder.encode("password2")).roles("USER", "ADMIN");
+  }
 }
