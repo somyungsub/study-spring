@@ -23,7 +23,10 @@ eureka:
     serviceUrl:
         defaultZone: http://localhost:8761/eureka/
 
-
+# 차단 목록 리스트 -> 디폴트 [Cookie, Set-Cookie, Authorization]
+# 아래 처럼 설정해야 Authorization 헤더를 하위서비스(라이선싱, 조직)에 토큰 전파가 가능해짐
+zuul:
+  sensitive-headers: Cookie,Set-Cookie
 
 #
 #
@@ -35,3 +38,4 @@ eureka:
 #  routes:
 #    organizationservice: /organization/**
 #    licensingservice: /licensing/**
+
