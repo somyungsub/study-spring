@@ -6,7 +6,6 @@ import com.thoughtmechanix.organization.repository.OrganizationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -15,7 +14,7 @@ public class OrganizationService {
     private OrganizationRepository orgRepository;
 
     @Autowired
-    SimpleSourceBean simpleSourceBean;
+    private SimpleSourceBean simpleSourceBean;
 
     public Organization getOrg(String organizationId) {
         return orgRepository.findById(organizationId).get();
@@ -25,17 +24,16 @@ public class OrganizationService {
         org.setId( UUID.randomUUID().toString());
 
         orgRepository.save(org);
-        simpleSourceBean.publishOrgChange("SAVE", org.getId());
+        simpleSourceBean.publishOrgChange("SAVE", org.getId());     // 메시지 발행
     }
 
     public void updateOrg(Organization org){
         orgRepository.save(org);
-        simpleSourceBean.publishOrgChange("UPDATE", org.getId());
-
+        simpleSourceBean.publishOrgChange("UPDATE", org.getId());   // 메시지 발행
     }
 
     public void deleteOrg(String  orgId){
         orgRepository.deleteById( orgId );
-        simpleSourceBean.publishOrgChange("DELETE", orgId);
+        simpleSourceBean.publishOrgChange("DELETE", orgId);         // 메시지 발행
     }
 }

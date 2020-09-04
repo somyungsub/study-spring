@@ -1,14 +1,14 @@
 spring:
   cloud:
     stream:
-      bindings:
-        output:
-            destination:  orgChangeTopic
-            content-type: application/json
-      kafka:
-        binder:
-          zkNodes: localhost
-          brokers: localhost
+      bindings: # Spring Cloud Stream의 메시지 브로커 발행 구성의 시작점 (property)
+        output: # 채널 관련 설정
+            destination:  orgChangeTopic    # 메시지큐 or 토픽의 이름
+            content-type: application/json  # 메시지 송수신 타입(JSON)
+        kafka: # 메시지 플랫폼을 Kafka 사용 -> Spring Cloud Stream에 알림
+          binder:
+            zkNodes: localhost  # 주키퍼 위치
+            brokers: localhost  # 카프카 위치
 
 #Setting the logging levels for the service
 logging:
