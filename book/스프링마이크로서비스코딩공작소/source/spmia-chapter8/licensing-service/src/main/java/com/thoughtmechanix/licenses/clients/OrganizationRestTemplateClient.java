@@ -42,13 +42,16 @@ public class OrganizationRestTemplateClient {
     public Organization getOrganization(String organizationId){
         logger.debug("In Licensing Service.getOrganization: {}", UserContext.getCorrelationId());
 
+        // 레디스 캐시 조회
         Organization org = checkRedisCache(organizationId);
 
+        // 캐시가 있다면 반환
         if (org!=null){
             logger.debug("I have successfully retrieved an organization {} from the redis cache: {}", organizationId, org);
             return org;
         }
 
+        // 캐시가 없다면 조직서비스 호출
         logger.debug("Unable to locate organization from the redis cache: {}.", organizationId);
 
         ResponseEntity<Organization> restExchange =
@@ -57,13 +60,14 @@ public class OrganizationRestTemplateClient {
                         HttpMethod.GET,
                         null, Organization.class, organizationId);
 
-        /*Save the record from cache*/
+        // 캐시(레디스)에 조직서비스 호출 결과 저장
         org = restExchange.getBody();
 
         if (org!=null) {
             cacheOrganizationObject(org);
         }
 
+        // 결과 반환
         return org;
     }
 

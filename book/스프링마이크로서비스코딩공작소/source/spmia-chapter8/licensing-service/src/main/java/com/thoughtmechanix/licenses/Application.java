@@ -55,24 +55,27 @@ public class Application {
 
         return template;
     }
-//
-//    @Bean
-//    public JedisConnectionFactory jedisConnectionFactory() {
-//        JedisConnectionFactory jedisConnFactory = new JedisConnectionFactory();
+
+    @Bean
+    public JedisConnectionFactory jedisConnectionFactory() {
+        // JedisConnectionFactory -> 레디스 서버에 실제 DB 커넥션 설정
+        JedisConnectionFactory jedisConnFactory = new JedisConnectionFactory();
 //        jedisConnFactory.setHostName( serviceConfig.getRedisServer());
-//        jedisConnFactory.setPort( serviceConfig.getRedisPort() );
-//        return jedisConnFactory;
-//    }
-//
-//    @Bean
-//    public RedisTemplate<String, Object> redisTemplate() {
-//        RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
-//        template.setConnectionFactory(jedisConnectionFactory());
-//        return template;
-//    }
+        jedisConnFactory.setPort( serviceConfig.getRedisPort() );
+        return jedisConnFactory;
+    }
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate() {
+        // 레디스 서버에 작업을 수행하는 데 사용
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(jedisConnectionFactory());
+        return template;
+    }
 
     @StreamListener(Sink.INPUT) // 메시지가 입력채널에서 수신될때마다 이메서드를 실행하게됨
     public void loggerSink(OrganizationChangeModel orgChange) {
+        // 여기에서 데이터 갱신을 활용해도 될듯
         logger.debug("Received an event for organization id {}", orgChange.getOrganizationId());
     }
 

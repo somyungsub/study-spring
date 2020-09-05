@@ -10,43 +10,43 @@ import javax.annotation.PostConstruct;
 
 @Repository
 public class OrganizationRedisRepositoryImpl implements OrganizationRedisRepository {
-    private static final String HASH_NAME ="organization";
+  private static final String HASH_NAME = "organization";     // 조직 데이터가 저장될 레디스 서버의 해시 이름
 
-    private RedisTemplate<String, Organization> redisTemplate;
-    private HashOperations hashOperations;
+  private RedisTemplate<String, Organization> redisTemplate;  // 레디스 통신에 사용
+  private HashOperations hashOperations;
 
-    public OrganizationRedisRepositoryImpl(){
-        super();
-    }
+  public OrganizationRedisRepositoryImpl() {
+    super();
+  }
 
-    @Autowired
-    private OrganizationRedisRepositoryImpl(RedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
+  @Autowired
+  private OrganizationRedisRepositoryImpl(RedisTemplate redisTemplate) {
+    this.redisTemplate = redisTemplate;
+  }
 
-    @PostConstruct
-    private void init() {
-        hashOperations = redisTemplate.opsForHash();
-    }
+  @PostConstruct
+  private void init() {
+    hashOperations = redisTemplate.opsForHash();
+  }
 
 
-    @Override
-    public void saveOrganization(Organization org) {
-        hashOperations.put(HASH_NAME, org.getId(), org);
-    }
+  @Override
+  public void saveOrganization(Organization org) {
+    hashOperations.put(HASH_NAME, org.getId(), org);
+  }
 
-    @Override
-    public void updateOrganization(Organization org) {
-        hashOperations.put(HASH_NAME, org.getId(), org);
-    }
+  @Override
+  public void updateOrganization(Organization org) {
+    hashOperations.put(HASH_NAME, org.getId(), org);
+  }
 
-    @Override
-    public void deleteOrganization(String organizationId) {
-        hashOperations.delete(HASH_NAME, organizationId);
-    }
+  @Override
+  public void deleteOrganization(String organizationId) {
+    hashOperations.delete(HASH_NAME, organizationId);
+  }
 
-    @Override
-    public Organization findOrganization(String organizationId) {
-       return (Organization) hashOperations.get(HASH_NAME, organizationId);
-    }
+  @Override
+  public Organization findOrganization(String organizationId) {
+    return (Organization) hashOperations.get(HASH_NAME, organizationId);
+  }
 }
