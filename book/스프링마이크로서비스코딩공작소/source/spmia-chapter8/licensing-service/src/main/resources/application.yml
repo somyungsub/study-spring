@@ -2,19 +2,18 @@ spring:
   cloud:
     stream:
       bindings:
-        inboundOrgChanges:
-          destination: orgChangeTopic
-          content-type: application/json
-          group: licensingGroup
-      kafka:
-        binder:
-          zkNodes: localhost
-          brokers: localhost
-
-#        input:
-#          destination: orgChangeTopic
-#          content-type: application/json
-#          group: licensingGroup
+#        inboundOrgChanges:
+#          destination: orgChangeTopic     # Topic 이름
+#          content-type: application/json  # JSON -> Java Object 역직렬화 타입
+#          group: licensingGroup           # 1번만 처리한다는 의미를 보장한다는데 사용하게 됨
+        kafka:
+          binder:
+            zkNodes: localhost    # 주키퍼 위치
+            brokers: localhost    # 메시지 브로커 위치 (여기서는 Kafka)
+        input:    # Input 채널
+          destination: orgChangeTopic     # Topic 이름
+          content-type: application/json  # JSON -> Java Object 역직렬화 타입
+          group: licensingGroup           # 1번만 처리한다는 의미를 보장한다는데 사용하게 됨
 
 eureka:
   instance:
@@ -32,3 +31,5 @@ logging:
     org.springframework.web: WARN
     com.thoughtmechanix: DEBUG
 
+server:
+  port: 8081

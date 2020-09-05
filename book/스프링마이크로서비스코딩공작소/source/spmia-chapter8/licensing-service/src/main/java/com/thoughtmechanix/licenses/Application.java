@@ -33,7 +33,7 @@ import java.util.List;
 @SpringBootApplication
 @EnableEurekaClient
 @EnableCircuitBreaker
-@EnableBinding(Sink.class)
+@EnableBinding(Sink.class)  // 메시지 브로커와 바인딩 -> 수신(소비자측)
 public class Application {
 
     @Autowired
@@ -55,26 +55,26 @@ public class Application {
 
         return template;
     }
-
-    @Bean
-    public JedisConnectionFactory jedisConnectionFactory() {
-        JedisConnectionFactory jedisConnFactory = new JedisConnectionFactory();
-        jedisConnFactory.setHostName( serviceConfig.getRedisServer());
-        jedisConnFactory.setPort( serviceConfig.getRedisPort() );
-        return jedisConnFactory;
-    }
-
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate() {
-        RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
-        template.setConnectionFactory(jedisConnectionFactory());
-        return template;
-    }
-
-//    @StreamListener(Sink.INPUT)
-//    public void loggerSink(OrganizationChangeModel orgChange) {
-//        logger.debug("Received an event for organization id {}", orgChange.getOrganizationId());
+//
+//    @Bean
+//    public JedisConnectionFactory jedisConnectionFactory() {
+//        JedisConnectionFactory jedisConnFactory = new JedisConnectionFactory();
+//        jedisConnFactory.setHostName( serviceConfig.getRedisServer());
+//        jedisConnFactory.setPort( serviceConfig.getRedisPort() );
+//        return jedisConnFactory;
 //    }
+//
+//    @Bean
+//    public RedisTemplate<String, Object> redisTemplate() {
+//        RedisTemplate<String, Object> template = new RedisTemplate<String, Object>();
+//        template.setConnectionFactory(jedisConnectionFactory());
+//        return template;
+//    }
+
+    @StreamListener(Sink.INPUT) // 메시지가 입력채널에서 수신될때마다 이메서드를 실행하게됨
+    public void loggerSink(OrganizationChangeModel orgChange) {
+        logger.debug("Received an event for organization id {}", orgChange.getOrganizationId());
+    }
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
