@@ -2,16 +2,16 @@ spring:
   cloud:
     stream:
       bindings:
-#        inboundOrgChanges:
-#          destination: orgChangeTopic     # Topic 이름
-#          content-type: application/json  # JSON -> Java Object 역직렬화 타입
-#          group: licensingGroup           # 1번만 처리한다는 의미를 보장한다는데 사용하게 됨
+        inboundOrgChanges:                # 사용자 정의에 명시한 채널이름을 input 대시 명시
+          destination: orgChangeTopic     # Topic 이름
+          content-type: application/json  # JSON -> Java Object 역직렬화 타입
+          group: licensingGroup           # 1번만 처리한다는 의미를 보장한다는데 사용하게 됨
         kafka:
           binder:
             zkNodes: localhost    # 주키퍼 위치
             brokers: localhost    # 메시지 브로커 위치 (여기서는 Kafka)
         input:    # Input 채널
-          destination: orgChangeTopic     # Topic 이름
+          destination: orgChangeTopic2     # Topic 이름
           content-type: application/json  # JSON -> Java Object 역직렬화 타입
           group: licensingGroup           # 1번만 처리한다는 의미를 보장한다는데 사용하게 됨
 
