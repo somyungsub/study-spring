@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: p0stgr@s
-      PSTGRES_DB: eagle_eye_local
+      POSTGRES_DB: eagle_eye_local
     ports:
     - 5432:5432
     container_name: postgres-msa
