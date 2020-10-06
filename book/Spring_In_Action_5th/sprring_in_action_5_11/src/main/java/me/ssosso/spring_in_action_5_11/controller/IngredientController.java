@@ -8,8 +8,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping(path="/ingredients", produces="application/json")
-@CrossOrigin(origins="*")
+@RequestMapping(path = "/ingredients", produces = "application/json")
+@CrossOrigin(origins = "*")
 public class IngredientController {
 
   @Autowired
@@ -18,10 +18,10 @@ public class IngredientController {
   @GetMapping
   public Flux<Ingredient> ingredients(@PathVariable String id) {
     Mono<Ingredient> mono = webClient
-        .get()
-        .uri("/{id}", id)
-        .retrieve()
-        .bodyToMono(Ingredient.class);
+      .get()
+      .uri("/{id}", id)
+      .retrieve()
+      .bodyToMono(Ingredient.class);
 
     mono.subscribe(ingredient -> System.out.println("ingredient = " + ingredient));
     return null;

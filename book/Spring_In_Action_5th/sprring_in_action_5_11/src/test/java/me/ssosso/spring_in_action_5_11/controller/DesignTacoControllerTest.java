@@ -22,7 +22,7 @@ class DesignTacoControllerTest {
   public void shouldReturnRecentTacos() {
     Taco[] tacos = new Taco[16];
     for (int i = 0; i < tacos.length; i++) {
-      tacos[i] = testTaco((long)i);
+      tacos[i] = testTaco((long) i);
     }
 
     Flux<Taco> tacoFlux = Flux.just(tacos);
@@ -32,18 +32,18 @@ class DesignTacoControllerTest {
     WebTestClient testClient = WebTestClient.bindToController(new DesignTacoController(tacoRepoMock)).build();
 
     testClient.get().uri("/design/recent")
-        .exchange()
-        .expectStatus().isOk()
-        .expectBody()
-        .jsonPath("$").isArray()
-        .jsonPath("$").isNotEmpty()
-        .jsonPath("$[0].id").isEqualTo(tacos[0].getId())
-        .jsonPath("$[0].name").isEqualTo(tacos[0].getName())
-        .jsonPath("$[1].id").isEqualTo(tacos[1].getId())
-        .jsonPath("$[1].name").isEqualTo(tacos[1].getName())
-        .jsonPath("$[11].id").isEqualTo(tacos[11].getId())
-        .jsonPath("$[11].name").isEqualTo(tacos[11].getName())
-        .jsonPath("$[12]").doesNotExist()
+      .exchange()
+      .expectStatus().isOk()
+      .expectBody()
+      .jsonPath("$").isArray()
+      .jsonPath("$").isNotEmpty()
+      .jsonPath("$[0].id").isEqualTo(tacos[0].getId())
+      .jsonPath("$[0].name").isEqualTo(tacos[0].getName())
+      .jsonPath("$[1].id").isEqualTo(tacos[1].getId())
+      .jsonPath("$[1].name").isEqualTo(tacos[1].getName())
+      .jsonPath("$[11].id").isEqualTo(tacos[11].getId())
+      .jsonPath("$[11].name").isEqualTo(tacos[11].getName())
+      .jsonPath("$[12]").doesNotExist()
     ;
 
   }
@@ -54,10 +54,10 @@ class DesignTacoControllerTest {
     list.add(new Ingredient("INGB", "Ingredient B", Ingredient.Type.PROTEIN));
 
     return Taco.builder()
-        .id(UUID.randomUUID().toString())
-        .name("Taco-" + i)
-        .ingredients(list)
-        .build();
+      .id(UUID.randomUUID().toString())
+      .name("Taco-" + i)
+//      .ingredients(list)
+      .build();
   }
 
 }

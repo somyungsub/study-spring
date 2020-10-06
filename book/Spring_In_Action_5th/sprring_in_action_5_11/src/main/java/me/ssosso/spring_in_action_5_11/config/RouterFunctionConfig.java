@@ -27,23 +27,23 @@ public class RouterFunctionConfig {
   @Bean
   public RouterFunction<?> helloRouterFunction() {
     return
-        route(
-            GET("/hello"),
-            request -> ok().body(just("Hello !! World! Web Flux!!"), String.class)
-        )
+      route(
+        GET("/hello"),
+        request -> ok().body(just("Hello !! World! Web Flux!!"), String.class)
+      )
         .andRoute(
-            GET("/bye"),
-            request -> ok().body(just("Good ! Bye!! Web Flux!!"), String.class)
+          GET("/bye"),
+          request -> ok().body(just("Good ! Bye!! Web Flux!!"), String.class)
         )
-        ;
+      ;
   }
 
   @Bean
-  public RouterFunction<?> routerFunction(){
+  public RouterFunction<?> routerFunction() {
     return route(GET("/design/taco"), this::recents)
 //        .andRoute(POST("/design"), this::postTaco)
 
-        ;
+      ;
   }
 
   public Mono<ServerResponse> recents(ServerRequest request) {
