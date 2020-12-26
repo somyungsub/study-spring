@@ -54,6 +54,7 @@ User.move();
 console.log(typeof User);
 
 console.log("============ 클로저 ==========");
+
 function User2(name) {
   console.log("I'm in " + this.constructor.name + "context.");
   this.name = name;

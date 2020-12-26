@@ -96,9 +96,13 @@ let es6map2 = fruits.map(fruit => {
 console.log(es6map2);
 
 console.log("===== sum =====");
-let sum = (a, b) => {a+b};
-let sum2 = (a, b) => {return a+b};
-let sum3 = (a, b) => a+b;
+let sum = (a, b) => {
+  a + b
+};
+let sum2 = (a, b) => {
+  return a + b
+};
+let sum3 = (a, b) => a + b;
 console.log(sum(1, 2));
 console.log(sum2(1, 2));
 console.log(sum3(1, 2));
@@ -158,6 +162,7 @@ class User2 {
     this.name = name;
   }
 }
+
 User2.prototype.swim = () => {
   console.log(this.name + ' is swimming');  //undefined
 }
@@ -166,6 +171,7 @@ var user2 = new User2();
 console.log(user2.swim());
 
 const shoppingCartConst = [];
+
 function addToCart(item, size = 1) {
   shoppingCartConst.push({item: item, count: size});
 }
@@ -210,7 +216,7 @@ console.log(name);
 console.log(interests);
 console.log(tasks);
 
-let {name3, interests3, tasks3=[]} = user3;
+let {name3, interests3, tasks3 = []} = user3;
 console.log(tasks3);  // []
 
 // name 프로퍼티 -> firstName 변수에 할당
